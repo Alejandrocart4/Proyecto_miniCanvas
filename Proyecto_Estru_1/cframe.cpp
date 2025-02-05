@@ -10,9 +10,9 @@ cframe::cframe(QWidget *parent)
     setWindowState(Qt::WindowMaximized);
 
     ui->btnsalir->setStyleSheet("background-color: rgba(0,0,0,0); border: none;");
+    ui->btn_registrar->setStyleSheet("background-color: rgba(0,0,0,0); border: none; color: blue; text-decoration: underline;");
+    ui->btn_registrar->setCursor(Qt::PointingHandCursor);
 
-    // Conectar el clic del botón a una función
-    //connect(ui->btnsalir, &QPushButton::clicked, this, &MainWindow::onBotonInvisibleClickeado);
 
 }
 
