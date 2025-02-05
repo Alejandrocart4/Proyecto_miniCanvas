@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Imagenes/Barra canvas.PNG</file>
+        <file>Imagenes/Canvas_Stacked_ByInstructure_Color_RGB.png</file>
+        <file>Imagenes/Canvas-Logo-transparent-Large.png</file>
+    </qresource>
+</RCC>
