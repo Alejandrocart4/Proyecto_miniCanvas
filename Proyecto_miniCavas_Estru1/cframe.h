@@ -18,12 +18,18 @@ public:
     cframe(QWidget *parent = nullptr);
     ~cframe();
 
-/*protected:
+    /*protected:
     void resizeEvent(QResizeEvent *event) override;*/
 
 
 private slots:
     void on_btnsalir_clicked();
+
+    void on_btn_Login_clicked();
+
+    void on_btn_registrar_clicked();
+
+    void on_btn_CrearUsuario_clicked();
 
 private:
     Ui::cframe *ui;

@@ -13,29 +13,29 @@ bool LoginManager::registrarUsuario(const Usuario &usuario) {
     }
 
     QDataStream out(&file);
-    out << usuario.getUsuario() << usuario.getPassword() << usuario.getRol();
+    out << usuario.getUsuario() << usuario.getPassword() << usuario.getTipoUsuario() << usuario.getNombre() << usuario.getApellido();
     file.close();
     return true;
 }
 
-// Autenticar usuario leyendo desde el archivo binario
-QString LoginManager::autenticarUsuario(const QString &usuario, const QString &password) {
+// Autenticar usuario y devolver su objeto completo
+Usuario LoginManager::autenticarUsuario(const QString &usuario, const QString &password) {
     QFile file(archivoUsuarios);
     if (!file.open(QIODevice::ReadOnly)) {
         qDebug() << "Error: No se pudo abrir el archivo.";
-        return "";
+        return Usuario();
     }
 
     QDataStream in(&file);
-    QString u, p, r;
+    QString u, p, tipo, nombre, apellido;
     while (!in.atEnd()) {
-        in >> u >> p >> r;
+        in >> u >> p >> tipo >> nombre >> apellido;
         if (u == usuario && p == password) {
             file.close();
-            return r; // Retorna el rol del usuario
+            return Usuario(u, p, tipo, nombre, apellido);
         }
     }
 
     file.close();
-    return ""; // No encontrado
+    return Usuario(); // Retorna un usuario vacío si no lo encuentra
 }

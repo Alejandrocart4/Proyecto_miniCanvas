@@ -12,7 +12,7 @@ public:
     LoginManager(const QString &archivoUsuarios);
 
     bool registrarUsuario(const Usuario &usuario);
-    QString autenticarUsuario(const QString &usuario, const QString &password);
+    Usuario autenticarUsuario(const QString &usuario, const QString &password);
 
 private:
     QString archivoUsuarios;
