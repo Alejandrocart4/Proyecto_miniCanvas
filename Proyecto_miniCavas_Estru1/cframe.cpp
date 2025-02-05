@@ -40,7 +40,7 @@ void cframe::on_btn_Login_clicked()
     QString usuario = ui->lineEditUsuario->text();
     QString password = ui->lineEditPassword->text();
 
-    /*if (usuarioAutenticado.getUsuario().isEmpty()) {
+   /* if (usuarioAutenticado.getUsuario().isEmpty()) {
         QMessageBox::warning(this, "Error", "Usuario o contraseña incorrectos.");
         return;
     }*/
@@ -51,12 +51,20 @@ void cframe::on_btn_Login_clicked()
 
 
     QString tipoUsuario = usuarioAutenticado.getTipoUsuario();
+    QString nombreCompleto = usuarioAutenticado.getNombre() + " " + usuarioAutenticado.getApellido();
+
+    // Mostrar mensaje de bienvenida
+
+
 
     if (tipoUsuario == "Registro") {
+         QMessageBox::information(this, "Bienvenido", "¡Bienvenido, " + nombreCompleto + "!");
         ui->stackedWidget->setCurrentIndex(1); // Ir a ventana de Registro
     } else if (tipoUsuario == "Maestro") {
+         QMessageBox::information(this, "Bienvenido", "¡Bienvenido, " + nombreCompleto + "!");
         ui->stackedWidget->setCurrentIndex(2); // Ir a ventana de Maestro
     } else if (tipoUsuario == "Alumno") {
+         QMessageBox::information(this, "Bienvenido", "¡Bienvenido, " + nombreCompleto + "!");
         ui->stackedWidget->setCurrentIndex(3); // Ir a ventana de Alumno
     } else {
         QMessageBox::warning(this, "Error", "El usuario no ha sido registrado o esta incorrecto.");
@@ -114,5 +122,11 @@ void cframe::on_btn_CrearUsuario_clicked()
     ui->lineEditNombre->clear();
     ui->lineEditApellido->clear();
 
+}
+
+
+void cframe::on_pushButton_2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
