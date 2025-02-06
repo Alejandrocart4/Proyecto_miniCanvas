@@ -14,6 +14,7 @@ cframe::cframe(QWidget *parent)
     ui->btn_registrar->setStyleSheet("background-color: rgba(0,0,0,0); border: none; color: blue; text-decoration: underline;");
     ui->btn_registrar->setCursor(Qt::PointingHandCursor);
 
+    ui->lineEditPassword->setEchoMode(QLineEdit::Password);
 
 }
 
@@ -28,7 +29,7 @@ void cframe::on_btnsalir_clicked()
     respuesta = QMessageBox::question(this, "Confirmación", "¿Seguro que quieres salir?",
                                       QMessageBox::Yes | QMessageBox::No);
 
-    // Si el usuario presiona "Sí", se cierra la ventana
+
     if (respuesta == QMessageBox::Yes) {
         QApplication::quit();
     }
@@ -40,14 +41,12 @@ void cframe::on_btn_Login_clicked()
     QString usuario = ui->lineEditUsuario->text();
     QString password = ui->lineEditPassword->text();
 
-   /* if (usuarioAutenticado.getUsuario().isEmpty()) {
-        QMessageBox::warning(this, "Error", "Usuario o contraseña incorrectos.");
-        return;
-    }*/
 
     LoginManager loginManager("usuarios.bin");
 
     Usuario usuarioAutenticado = loginManager.autenticarUsuario(usuario, password);
+
+
 
 
     QString tipoUsuario = usuarioAutenticado.getTipoUsuario();
@@ -66,8 +65,11 @@ void cframe::on_btn_Login_clicked()
     } else if (tipoUsuario == "Alumno") {
          QMessageBox::information(this, "Bienvenido", "¡Bienvenido, " + nombreCompleto + "!");
         ui->stackedWidget->setCurrentIndex(3); // Ir a ventana de Alumno
-    } else {
-        QMessageBox::warning(this, "Error", "El usuario no ha sido registrado o esta incorrecto.");
+    } else     if (usuario.isEmpty() || password.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Debe de llenar todos los espacios.");
+        return;
+    } else{
+        QMessageBox::warning(this, "Error", "El usuario no ha sido registrado. Pida a REGISTRO que le cree una cuenta.");
         return;
     }
 
@@ -83,7 +85,6 @@ void cframe::on_btn_registrar_clicked()
 void cframe::on_btn_CrearUsuario_clicked()
 {
 
-    // Obtener datos de los QLineEdit y QComboBox
     QString usuario = ui->lineEditNuevoUsuario->text();
     QString password = ui->lineEditNuevoPassword->text();
     QString confirmarPassword = ui->lineEditConfirmarPassword->text();
@@ -91,22 +92,18 @@ void cframe::on_btn_CrearUsuario_clicked()
     QString nombre = ui->lineEditNombre->text();
     QString apellido = ui->lineEditApellido->text();
 
-    // Validar que los campos no estén vacíos
     if (usuario.isEmpty() || password.isEmpty() || confirmarPassword.isEmpty() || tipoUsuario.isEmpty() || nombre.isEmpty() || apellido.isEmpty()) {
         QMessageBox::warning(this, "Error", "Todos los campos son obligatorios.");
         return;
     }
 
-    // Validar que ambas contraseñas coincidan
     if (password != confirmarPassword) {
         QMessageBox::warning(this, "Error", "Las contraseñas no coinciden.");
         return;
     }
 
-    // Crear el objeto usuario
     Usuario nuevoUsuario(usuario, password, tipoUsuario, nombre, apellido);
 
-    // Guardar el usuario en el archivo binario
     LoginManager loginManager("usuarios.bin");
     if (loginManager.registrarUsuario(nuevoUsuario)) {
         QMessageBox::information(this, "Éxito", "Usuario creado exitosamente.");
@@ -114,7 +111,6 @@ void cframe::on_btn_CrearUsuario_clicked()
         QMessageBox::critical(this, "Error", "No se pudo crear el usuario.");
     }
 
-    // Limpiar los campos después de registrar
     ui->lineEditNuevoUsuario->clear();
     ui->lineEditNuevoPassword->clear();
     ui->lineEditConfirmarPassword->clear();
@@ -128,5 +124,23 @@ void cframe::on_btn_CrearUsuario_clicked()
 void cframe::on_pushButton_2_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
+    ui->lineEditUsuario->clear();
+    ui->lineEditPassword->clear();
+    ui->lineEditNuevoUsuario->clear();
+    ui->lineEditNuevoPassword->clear();
+    ui->lineEditConfirmarPassword->clear();
+    ui->comboBoxTipoUsuario->setCurrentIndex(0);
+    ui->lineEditNombre->clear();
+    ui->lineEditApellido->clear();
+}
+
+
+void cframe::on_btnVerPasswordLogin_clicked()
+{
+    passwordVisibleLogin = !passwordVisibleLogin;
+    ui->lineEditPassword->setEchoMode(passwordVisibleLogin ? QLineEdit::Normal : QLineEdit::Password);
+
+    // Cambiar icono del botón
+     ui->btnVerPasswordLogin->setIcon(QIcon(passwordVisibleLogin ? ":/Imagenes/showpassword.png" : ":/Imagenes/ocultarcontra.png"));
 }
 

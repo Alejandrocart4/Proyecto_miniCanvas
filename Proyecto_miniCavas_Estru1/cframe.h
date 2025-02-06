@@ -33,7 +33,11 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_btnVerPasswordLogin_clicked();
+
 private:
     Ui::cframe *ui;
+    bool passwordVisibleRegistro = false;
+    bool passwordVisibleLogin = false;
 };
 #endif // CFRAME_H
