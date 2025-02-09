@@ -9,12 +9,19 @@ cframe::cframe(QWidget *parent)
 {
     ui->setupUi(this);
     setWindowState(Qt::WindowMaximized);
+    //ui->tableClasesUsuario->setVisible(false);
 
     ui->btnsalir->setStyleSheet("background-color: rgba(0,0,0,0); border: none;");
     ui->btn_registrar->setStyleSheet("background-color: rgba(0,0,0,0); border: none; color: blue; text-decoration: underline;");
     ui->btn_registrar->setCursor(Qt::PointingHandCursor);
 
     ui->lineEditPassword->setEchoMode(QLineEdit::Password);
+
+    ui->comboBoxTipoUsuarioModificar->addItem("Alumno");
+    ui->comboBoxTipoUsuarioModificar->addItem("Maestro");
+    ui->comboBoxTipoUsuarioModificar->addItem("Registro");
+
+    ui->lineEditUsuarioModificar->setReadOnly(false);
 
 }
 
@@ -35,7 +42,6 @@ void cframe::on_btnsalir_clicked()
     }
 }
 
-
 void cframe::on_btn_Login_clicked()
 {
     QString usuario = ui->lineEditUsuario->text();
@@ -46,13 +52,8 @@ void cframe::on_btn_Login_clicked()
 
     Usuario usuarioAutenticado = loginManager.autenticarUsuario(usuario, password);
 
-
-
-
     QString tipoUsuario = usuarioAutenticado.getTipoUsuario();
     QString nombreCompleto = usuarioAutenticado.getNombre() + " " + usuarioAutenticado.getApellido();
-
-    // Mostrar mensaje de bienvenida
 
 
 
@@ -75,12 +76,10 @@ void cframe::on_btn_Login_clicked()
 
 }
 
-
 void cframe::on_btn_registrar_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
 }
-
 
 void cframe::on_btn_CrearUsuario_clicked()
 {
@@ -120,20 +119,26 @@ void cframe::on_btn_CrearUsuario_clicked()
 
 }
 
-
 void cframe::on_pushButton_2_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
-    ui->lineEditUsuario->clear();
-    ui->lineEditPassword->clear();
-    ui->lineEditNuevoUsuario->clear();
-    ui->lineEditNuevoPassword->clear();
-    ui->lineEditConfirmarPassword->clear();
-    ui->comboBoxTipoUsuario->setCurrentIndex(0);
-    ui->lineEditNombre->clear();
-    ui->lineEditApellido->clear();
-}
+    QMessageBox::StandardButton respuesta;
+    respuesta = QMessageBox::question(this, "Confirmación", "¿Seguro que quieres salir?",
+                                      QMessageBox::Yes | QMessageBox::No);
 
+
+    if (respuesta == QMessageBox::Yes) {
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->lineEditUsuario->clear();
+        ui->lineEditPassword->clear();
+        ui->lineEditNuevoUsuario->clear();
+        ui->lineEditNuevoPassword->clear();
+        ui->lineEditConfirmarPassword->clear();
+        ui->comboBoxTipoUsuario->setCurrentIndex(0);
+        ui->lineEditNombre->clear();
+        ui->lineEditApellido->clear();
+        ui->stackedWidget_2->setCurrentIndex(0);
+    }
+    }
 
 void cframe::on_btnVerPasswordLogin_clicked()
 {
@@ -142,5 +147,181 @@ void cframe::on_btnVerPasswordLogin_clicked()
 
     // Cambiar icono del botón
      ui->btnVerPasswordLogin->setIcon(QIcon(passwordVisibleLogin ? ":/Imagenes/showpassword.png" : ":/Imagenes/ocultarcontra.png"));
+}
+
+void cframe::on_pushButton_3_clicked()
+{
+    ui->stackedWidget_2->setCurrentIndex(1);
+}
+
+void cframe::on_btnBuscarUsuario_clicked()
+{
+    QString usuarioBuscado = ui->lineEditBuscarUsuario->text();
+    if (usuarioBuscado.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Ingrese un usuario.");
+        return;
+    }
+
+    LoginManager loginManager("usuarios.bin");
+    Usuario usuarioEncontrado = loginManager.autenticarUsuario(usuarioBuscado, "");
+
+    if (usuarioEncontrado.getUsuario().isEmpty()) {
+        QMessageBox::warning(this, "Error", "Usuario no encontrado.");
+        return;
+    }
+
+    ui->lblNombreUsuario->setText(usuarioEncontrado.getNombre());
+    ui->lblApellidoUsuario->setText(usuarioEncontrado.getApellido());
+
+    ui->tableClasesUsuario->clear();
+    ui->tableClasesUsuario->setRowCount(0);
+
+    if (usuarioEncontrado.getTipoUsuario() == "Registro") {
+        mostrarTablaClases(false);
+    } else {
+        QList<QString> clases = loginManager.obtenerClasesUsuario(usuarioBuscado);
+        for (const QString &clase : clases) {
+            int row = ui->tableClasesUsuario->rowCount();
+            ui->tableClasesUsuario->insertRow(row);
+            ui->tableClasesUsuario->setItem(row, 0, new QTableWidgetItem(clase));
+        }
+        mostrarTablaClases(true);
+    }
+}
+
+void cframe::mostrarTablaClases(bool visible)
+{
+    ui->tableClasesUsuario->setVisible(visible);
+}
+
+void cframe::on_pushButton_8_clicked()
+{
+    QString usuario = ui->lineEditBuscarUsuario->text();
+    if (usuario.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Ingrese un usuario a eliminar.");
+        return;
+    }
+
+    LoginManager loginManager("usuarios.bin");
+    Usuario usuarioEncontrado = loginManager.autenticarUsuario(usuario, "");
+
+    if (usuarioEncontrado.getUsuario().isEmpty()) {
+        QMessageBox::warning(this, "Error", "Usuario no encontrado.");
+        return;
+    }
+
+    QString advertencia = "¿Está seguro de que desea eliminar este usuario?";
+    if (usuarioEncontrado.getTipoUsuario() != "Registro") {
+        advertencia += "\nSe perderán las clases asignadas a este usuario.";
+    }
+
+    QMessageBox::StandardButton confirmacion;
+    confirmacion = QMessageBox::warning(this, "Confirmación", advertencia, QMessageBox::Yes | QMessageBox::No);
+
+    if (confirmacion == QMessageBox::Yes) {
+        if (loginManager.eliminarUsuario(usuario)) {
+            QMessageBox::information(this, "Éxito", "Usuario eliminado correctamente.");
+            ui->lineEditBuscarUsuario->clear();
+            ui->lblNombreUsuario->clear();
+            ui->lblApellidoUsuario->clear();
+            ui->tableClasesUsuario->clear();
+            ui->tableClasesUsuario->setRowCount(0);
+            mostrarTablaClases(false);
+        } else {
+            QMessageBox::critical(this, "Error", "No se pudo eliminar el usuario.");
+        }
+    }
+}
+
+
+void cframe::on_pushButton_4_clicked()
+{
+    ui->stackedWidget_2->setCurrentIndex(2);
+}
+
+
+
+void cframe::on_btnBuscarUsuarioEditar_clicked()
+{
+    QString usuarioBuscado = ui->lineEditBuscarUsuarioEditar->text(); // Obtener usuario ingresado en la búsqueda
+    if (usuarioBuscado.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Ingrese un usuario para buscar.");
+        return;
+    }
+
+    LoginManager loginManager("usuarios.bin");
+    Usuario usuarioEncontrado = loginManager.autenticarUsuario(usuarioBuscado, "");
+
+    if (usuarioEncontrado.getUsuario().isEmpty()) {
+        QMessageBox::warning(this, "Error", "Usuario no encontrado.");
+        return;
+    }
+
+
+    usuarioAnterior = usuarioEncontrado.getUsuario();
+
+
+    ui->lineEditUsuarioModificar->setText(usuarioEncontrado.getUsuario());
+    ui->lineEditUsuarioModificar->setReadOnly(false);
+
+
+    ui->lineEditNombreModificar->setText(usuarioEncontrado.getNombre());
+    ui->lineEditApellidoModificar->setText(usuarioEncontrado.getApellido());
+    ui->lineEditNuevaPasswordModificar->setText(usuarioEncontrado.getPassword());
+    ui->lineEditConfirmarPasswordModificar->clear();
+
+
+    int index = ui->comboBoxTipoUsuarioModificar->findText(usuarioEncontrado.getTipoUsuario());
+    if (index != -1) {
+        ui->comboBoxTipoUsuarioModificar->setCurrentIndex(index);
+    }
+
+    qDebug() << "Usuario a modificar encontrado:" << usuarioAnterior;
+}
+
+void cframe::setUsuarioActivo(const QString &usuario)
+{
+    usuarioActivo = usuario;
+    ui->lineEditUsuarioModificar->setText(usuario);
+}
+
+
+void cframe::on_btnGuardarCambioUsuario_clicked()
+{
+    QString nuevoUsuario = ui->lineEditUsuarioModificar->text();
+    QString nuevoNombre = ui->lineEditNombreModificar->text();
+    QString nuevoApellido = ui->lineEditApellidoModificar->text();
+    QString nuevaPassword = ui->lineEditNuevaPasswordModificar->text();
+    QString confirmarPassword = ui->lineEditConfirmarPasswordModificar->text();
+    QString nuevoTipoUsuario = ui->comboBoxTipoUsuarioModificar->currentText();
+
+    qDebug() << "Intentando modificar el usuario:" << usuarioAnterior << " por " << nuevoUsuario;
+
+    if (nuevoUsuario.isEmpty() || nuevoNombre.isEmpty() || nuevoApellido.isEmpty() || nuevaPassword.isEmpty() || confirmarPassword.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Todos los campos son obligatorios.");
+        return;
+    }
+
+    // Verificar que ambas contraseñas coincidan
+    if (nuevaPassword != confirmarPassword) {
+        QMessageBox::critical(this, "Error", "Las contraseñas no coinciden.");
+        return;
+    }
+
+    LoginManager loginManager("usuarios.bin");
+
+    if (loginManager.modificarUsuario(usuarioAnterior, nuevoUsuario, nuevaPassword, nuevoNombre, nuevoApellido, nuevoTipoUsuario)) {
+        QMessageBox::information(this, "Éxito", "Usuario modificado correctamente.");
+        usuarioAnterior = nuevoUsuario;  // Actualizar el usuario modificado
+        ui->lineEditUsuarioModificar->setText(nuevoUsuario);
+    } else {
+        QMessageBox::critical(this, "Error", "No se pudo modificar el usuario.");
+    }
+}
+
+
+void cframe::on_btnEditarUsuario_clicked()
+{
+    ui->stackedWidget_2->setCurrentIndex(3);
 }
 
