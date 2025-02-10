@@ -9,7 +9,7 @@ cframe::cframe(QWidget *parent)
 {
     ui->setupUi(this);
     setWindowState(Qt::WindowMaximized);
-    ui->tableClasesUsuario->setVisible(false);
+    //ui->tableClasesUsuario->setVisible(false);
 
     ui->btnsalir->setStyleSheet("background-color: rgba(0,0,0,0); border: none;");
     ui->btn_registrar->setStyleSheet("background-color: rgba(0,0,0,0); border: none; color: blue; text-decoration: underline;");
@@ -23,8 +23,6 @@ cframe::cframe(QWidget *parent)
 
     ui->lineEditUsuarioModificar->setReadOnly(false);
 
-    ui->spinBoxSueldoNuevo->setVisible(false);
-    ui->lblSueldo->setVisible(false);
 }
 
 cframe::~cframe()
@@ -83,19 +81,6 @@ void cframe::on_btn_registrar_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-void cframe::on_comboBoxTipoUsuario_currentIndexChanged(int index)
-{
-    QString tipoUsuario = ui->comboBoxTipoUsuario->currentText();
-
-    // Si el usuario es "Maestro", mostrar el sueldo
-    if (tipoUsuario == "Maestro") {
-        ui->spinBoxSueldoNuevo->setVisible(true);
-        ui->lblSueldo->setVisible(true);
-    } else {
-        ui->spinBoxSueldoNuevo->setVisible(false);
-    }
-}
-
 void cframe::on_btn_CrearUsuario_clicked()
 {
 
@@ -105,8 +90,6 @@ void cframe::on_btn_CrearUsuario_clicked()
     QString tipoUsuario = ui->comboBoxTipoUsuario->currentText();
     QString nombre = ui->lineEditNombre->text();
     QString apellido = ui->lineEditApellido->text();
-    QString sueldo = "0.00";
-    QList<QString> clases;
 
     if (usuario.isEmpty() || password.isEmpty() || confirmarPassword.isEmpty() || tipoUsuario.isEmpty() || nombre.isEmpty() || apellido.isEmpty()) {
         QMessageBox::warning(this, "Error", "Todos los campos son obligatorios.");
@@ -118,10 +101,10 @@ void cframe::on_btn_CrearUsuario_clicked()
         return;
     }
 
-    Usuario nuevoUsuario(usuario, password, tipoUsuario, nombre, apellido, sueldo, clases);
+    Usuario nuevoUsuario(usuario, password, tipoUsuario, nombre, apellido);
 
     LoginManager loginManager("usuarios.bin");
-    if (loginManager.registrarUsuario(nuevoUsuario, sueldo, clases)) {
+    if (loginManager.registrarUsuario(nuevoUsuario)) {
         QMessageBox::information(this, "Éxito", "Usuario creado exitosamente.");
     } else {
         QMessageBox::critical(this, "Error", "No se pudo crear el usuario.");
@@ -311,19 +294,8 @@ void cframe::on_btnGuardarCambioUsuario_clicked()
     QString nuevaPassword = ui->lineEditNuevaPasswordModificar->text();
     QString confirmarPassword = ui->lineEditConfirmarPasswordModificar->text();
     QString nuevoTipoUsuario = ui->comboBoxTipoUsuarioModificar->currentText();
-    QString nuevoSueldo = "0.00";
-    QList<QString> nuevasClases;
-
 
     qDebug() << "Intentando modificar el usuario:" << usuarioAnterior << " por " << nuevoUsuario;
-
-    /*if (nuevoTipoUsuario == "Maestro") {
-        nuevoSueldo = QString::number(ui->spinBoxSueldoModificar->value(), 'f', 2);
-        if (nuevoSueldo.toDouble() <= 0) {
-            QMessageBox::warning(this, "Error", "Debe ingresar un sueldo válido para el maestro.");
-            return;
-        }
-    }*/
 
     if (nuevoUsuario.isEmpty() || nuevoNombre.isEmpty() || nuevoApellido.isEmpty() || nuevaPassword.isEmpty() || confirmarPassword.isEmpty()) {
         QMessageBox::warning(this, "Error", "Todos los campos son obligatorios.");
@@ -336,17 +308,12 @@ void cframe::on_btnGuardarCambioUsuario_clicked()
         return;
     }
 
-    /*for (int i = 0; i < ui->listWidgetClasesModificar->count(); ++i) {
-        nuevasClases.append(ui->listWidgetClasesModificar->item(i)->text());
-    }*/
-
     LoginManager loginManager("usuarios.bin");
 
-    if (loginManager.modificarUsuario(usuarioAnterior, nuevoUsuario, nuevaPassword, nuevoNombre, nuevoApellido, nuevoTipoUsuario, nuevoSueldo, nuevasClases)) {
+    if (loginManager.modificarUsuario(usuarioAnterior, nuevoUsuario, nuevaPassword, nuevoNombre, nuevoApellido, nuevoTipoUsuario)) {
         QMessageBox::information(this, "Éxito", "Usuario modificado correctamente.");
         usuarioAnterior = nuevoUsuario;  // Actualizar el usuario modificado
         ui->lineEditUsuarioModificar->setText(nuevoUsuario);
-        //ui->spinBoxSueldoModificar->setValue(nuevoSueldo.toDouble());
     } else {
         QMessageBox::critical(this, "Error", "No se pudo modificar el usuario.");
     }
