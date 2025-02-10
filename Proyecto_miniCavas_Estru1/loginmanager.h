@@ -14,8 +14,7 @@ public:
     Usuario autenticarUsuario(const QString &usuario, const QString &password);
     QList<QString> obtenerClasesUsuario(const QString &usuario);
     bool eliminarUsuario(const QString &usuario);
-    bool modificarUsuario(const QString &usuarioAnterior, const QString &nuevoUsuario, const QString &nuevaPassword, const QString &nuevoNombre, const QString &nuevoApellido, const QString &nuevoTipoUsuario);
-
+    bool modificarUsuario(const QString &usuarioAnterior, const QString &nuevoUsuario, const QString &nuevaPassword, const QString &nuevoNombre, const QString &nuevoApellido, const QString &nuevoTipoUsuario, const QString &nuevoSueldo);
 
 private:
     QString archivoUsuarios;

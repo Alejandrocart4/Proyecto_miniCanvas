@@ -9,7 +9,7 @@ cframe::cframe(QWidget *parent)
 {
     ui->setupUi(this);
     setWindowState(Qt::WindowMaximized);
-    //ui->tableClasesUsuario->setVisible(false);
+    ui->tableClasesUsuario->setVisible(false);
 
     ui->btnsalir->setStyleSheet("background-color: rgba(0,0,0,0); border: none;");
     ui->btn_registrar->setStyleSheet("background-color: rgba(0,0,0,0); border: none; color: blue; text-decoration: underline;");
@@ -22,6 +22,11 @@ cframe::cframe(QWidget *parent)
     ui->comboBoxTipoUsuarioModificar->addItem("Registro");
 
     ui->lineEditUsuarioModificar->setReadOnly(false);
+
+    ui->lblsueldo->setVisible(false);
+    ui->dSb_SueldoMaestroregistro->setVisible(false);
+
+
 
 }
 
@@ -81,6 +86,8 @@ void cframe::on_btn_registrar_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
+
+
 void cframe::on_btn_CrearUsuario_clicked()
 {
 
@@ -90,6 +97,12 @@ void cframe::on_btn_CrearUsuario_clicked()
     QString tipoUsuario = ui->comboBoxTipoUsuario->currentText();
     QString nombre = ui->lineEditNombre->text();
     QString apellido = ui->lineEditApellido->text();
+    QString sueldo = "0.00";
+
+
+    if (tipoUsuario == "Maestro") {
+        sueldo = QString::number(ui->dSb_SueldoMaestroregistro->value(), 'f', 2);
+    }
 
     if (usuario.isEmpty() || password.isEmpty() || confirmarPassword.isEmpty() || tipoUsuario.isEmpty() || nombre.isEmpty() || apellido.isEmpty()) {
         QMessageBox::warning(this, "Error", "Todos los campos son obligatorios.");
@@ -101,9 +114,9 @@ void cframe::on_btn_CrearUsuario_clicked()
         return;
     }
 
-    Usuario nuevoUsuario(usuario, password, tipoUsuario, nombre, apellido);
-
+    Usuario nuevoUsuario(usuario, password, tipoUsuario, nombre, apellido, sueldo);
     LoginManager loginManager("usuarios.bin");
+
     if (loginManager.registrarUsuario(nuevoUsuario)) {
         QMessageBox::information(this, "Éxito", "Usuario creado exitosamente.");
     } else {
@@ -116,6 +129,7 @@ void cframe::on_btn_CrearUsuario_clicked()
     ui->comboBoxTipoUsuario->setCurrentIndex(0);
     ui->lineEditNombre->clear();
     ui->lineEditApellido->clear();
+    ui->dSb_SueldoMaestroregistro->setValue(0.00);
 
 }
 
@@ -233,16 +247,12 @@ void cframe::on_pushButton_8_clicked()
     }
 }
 
-
 void cframe::on_pushButton_4_clicked()
 {
     ui->stackedWidget_2->setCurrentIndex(2);
 }
 
-
-
-void cframe::on_btnBuscarUsuarioEditar_clicked()
-{
+void cframe::on_btnBuscarUsuarioEditar_clicked(){
     QString usuarioBuscado = ui->lineEditBuscarUsuarioEditar->text(); // Obtener usuario ingresado en la búsqueda
     if (usuarioBuscado.isEmpty()) {
         QMessageBox::warning(this, "Error", "Ingrese un usuario para buscar.");
@@ -279,12 +289,12 @@ void cframe::on_btnBuscarUsuarioEditar_clicked()
     qDebug() << "Usuario a modificar encontrado:" << usuarioAnterior;
 }
 
+
 void cframe::setUsuarioActivo(const QString &usuario)
 {
     usuarioActivo = usuario;
     ui->lineEditUsuarioModificar->setText(usuario);
 }
-
 
 void cframe::on_btnGuardarCambioUsuario_clicked()
 {
@@ -294,6 +304,11 @@ void cframe::on_btnGuardarCambioUsuario_clicked()
     QString nuevaPassword = ui->lineEditNuevaPasswordModificar->text();
     QString confirmarPassword = ui->lineEditConfirmarPasswordModificar->text();
     QString nuevoTipoUsuario = ui->comboBoxTipoUsuarioModificar->currentText();
+    QString nuevoSueldo = "0.00";
+
+    if (nuevoTipoUsuario == "Maestro") {
+        nuevoSueldo = QString::number(ui->dSb_SueldoMaestroregistro->value(), 'f', 2);
+    }
 
     qDebug() << "Intentando modificar el usuario:" << usuarioAnterior << " por " << nuevoUsuario;
 
@@ -310,7 +325,7 @@ void cframe::on_btnGuardarCambioUsuario_clicked()
 
     LoginManager loginManager("usuarios.bin");
 
-    if (loginManager.modificarUsuario(usuarioAnterior, nuevoUsuario, nuevaPassword, nuevoNombre, nuevoApellido, nuevoTipoUsuario)) {
+    if (loginManager.modificarUsuario(usuarioAnterior, nuevoUsuario, nuevaPassword, nuevoNombre, nuevoApellido, nuevoTipoUsuario,nuevoSueldo)) {
         QMessageBox::information(this, "Éxito", "Usuario modificado correctamente.");
         usuarioAnterior = nuevoUsuario;  // Actualizar el usuario modificado
         ui->lineEditUsuarioModificar->setText(nuevoUsuario);
@@ -319,9 +334,24 @@ void cframe::on_btnGuardarCambioUsuario_clicked()
     }
 }
 
-
 void cframe::on_btnEditarUsuario_clicked()
 {
     ui->stackedWidget_2->setCurrentIndex(3);
+}
+
+
+void cframe::on_comboBoxTipoUsuario_activated(int index)
+{
+    QString tipoUsuario = ui->comboBoxTipoUsuario->itemText(index);
+
+    if (tipoUsuario == "Maestro") {
+        ui->lblsueldo->setVisible(true);
+        ui->dSb_SueldoMaestroregistro->setVisible(true);
+        qDebug() << "Tipo de usuario seleccionado: Maestro - Mostrando sueldo";
+    } else {
+        ui->lblsueldo->setVisible(false);
+        ui->dSb_SueldoMaestroregistro->setVisible(false);
+        qDebug() << "Tipo de usuario seleccionado: " << tipoUsuario << " - Ocultando sueldo";
+    }
 }
 

@@ -49,6 +49,9 @@ private slots:
 
     void on_btnEditarUsuario_clicked();
 
+
+    void on_comboBoxTipoUsuario_activated(int index);
+
 private:
     Ui::cframe *ui;
     bool passwordVisibleRegistro = false;
@@ -56,5 +59,6 @@ private:
     void mostrarTablaClases(bool visible);
     QString usuarioActivo;
     QString usuarioAnterior;
+    //void on_comboBoxTipoUsuario_activated(int index);
 };
 #endif // CFRAME_H
