@@ -5,18 +5,29 @@ LoginManager::LoginManager(const QString &archivoUsuarios) {
 }
 
 
-bool LoginManager::registrarUsuario(const Usuario &usuario) {
+bool LoginManager::registrarUsuario(const Usuario &usuario, const QString &sueldo, const QList<QString> &clases) {
     QFile file(archivoUsuarios);
     if (!file.open(QIODevice::Append)) {
-        qDebug() << "Error: No se pudo abrir el archivo.";
+        qDebug() << "Error: No se pudo abrir el archivo para escribir.";
         return false;
     }
 
     QDataStream out(&file);
     out.setVersion(QDataStream::Qt_6_0);
-    out << usuario.getUsuario() << usuario.getPassword() << usuario.getTipoUsuario() << usuario.getNombre() << usuario.getApellido();
+
+
+    out << usuario.getUsuario()
+        << usuario.getPassword()
+        << usuario.getTipoUsuario()
+        << usuario.getNombre()
+        << usuario.getApellido()
+        << sueldo
+        << clases;
+
     file.flush();
     file.close();
+
+    qDebug() << "Usuario guardado en el archivo binario con sueldo:" << sueldo << " y clases: " << clases;
     return true;
 }
 
@@ -52,32 +63,25 @@ QList<QString> LoginManager::obtenerClasesUsuario(const QString &usuario)
 Usuario LoginManager::autenticarUsuario(const QString &usuario, const QString &password) {
     QFile file(archivoUsuarios);
     if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << "Error: No se pudo abrir el archivo binario: " << archivoUsuarios;
+        qDebug() << "Error: No se pudo abrir el archivo.";
         return Usuario();
     }
 
     QDataStream in(&file);
-    //in.setVersion(QDataStream::Qt_5_15); // Asegurar compatibilidad
-    QString u, p, tipo, nombre, apellido;
-
-    qDebug() << "Buscando usuario:" << usuario;
+    QString u, p, tipo, nombre, apellido, sueldo;
+    QList<QString> clases;
 
     while (!in.atEnd()) {
-        in >> u >> p >> tipo >> nombre >> apellido;
-        u = u.trimmed();
-        p = p.trimmed();
+        in >> u >> p >> tipo >> nombre >> apellido >> sueldo >> clases;
 
-        qDebug() << "Usuario en archivo:" << u;
-
-        if (u == usuario.trimmed() && (password.isEmpty() || p == password.trimmed())) {
-            qDebug() << "Usuario encontrado: " << usuario;
+        if (u == usuario && (password.isEmpty() || p == password)) {
             file.close();
-            return Usuario(u, p, tipo, nombre, apellido);
+            qDebug() << "Usuario autenticado con sueldo:" << sueldo << " y clases: " << clases;
+            return Usuario(u, p, tipo, nombre, apellido, sueldo, clases);
         }
     }
 
     file.close();
-    qDebug() << "Usuario no encontrado";
     return Usuario();
 }
 bool LoginManager::eliminarUsuario(const QString &usuario)
@@ -113,7 +117,9 @@ bool LoginManager::eliminarUsuario(const QString &usuario)
     return eliminado;
 }
 
-bool LoginManager::modificarUsuario(const QString &usuarioAnterior, const QString &nuevoUsuario, const QString &nuevaPassword, const QString &nuevoNombre, const QString &nuevoApellido, const QString &nuevoTipoUsuario)
+bool LoginManager::modificarUsuario(const QString &usuarioAnterior, const QString &nuevoUsuario, const QString &nuevaPassword,
+                                    const QString &nuevoNombre, const QString &nuevoApellido, const QString &nuevoTipoUsuario,
+                                    const QString &sueldo, const QList<QString> &clases)
 {
     QFile file(archivoUsuarios);
     QFile tempFile("temp.bin");
@@ -127,19 +133,21 @@ bool LoginManager::modificarUsuario(const QString &usuarioAnterior, const QStrin
     QDataStream out(&tempFile);
     out.setVersion(QDataStream::Qt_6_0);
 
-    QString u, p, tipo, nombre, apellido;
+    QString u, p, tipo, nombre, apellido, sueldoGuardado;
+    QList<QString> clasesGuardadas;
     bool modificado = false;
 
     while (!in.atEnd()) {
-        in >> u >> p >> tipo >> nombre >> apellido;
-        qDebug() << "Leyendo usuario:" << u;
+        in >> u >> p >> tipo >> nombre >> apellido >> sueldoGuardado >> clasesGuardadas;
+
+        qDebug() << "Leyendo usuario en binario:" << u;
 
         if (u == usuarioAnterior) {
             qDebug() << "Modificando usuario: " << usuarioAnterior << " por " << nuevoUsuario;
-            out << nuevoUsuario << nuevaPassword << nuevoTipoUsuario << nuevoNombre << nuevoApellido;
+            out << nuevoUsuario << nuevaPassword << nuevoTipoUsuario << nuevoNombre << nuevoApellido << sueldo << clases;
             modificado = true;
         } else {
-            out << u << p << tipo << nombre << apellido;
+            out << u << p << tipo << nombre << apellido << sueldoGuardado << clasesGuardadas;
         }
     }
 

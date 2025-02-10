@@ -2,12 +2,14 @@
 
 Usuario::Usuario() {}
 
-Usuario::Usuario(const QString &usuario, const QString &password, const QString &tipoUsuario, const QString &nombre, const QString &apellido) {
+Usuario::Usuario(const QString &usuario, const QString &password, const QString &tipoUsuario, const QString &nombre, const QString &apellido, const QString &sueldo, const QList<QString> &clases){
     this->usuario = usuario;
     this->password = password;
     this->tipoUsuario = tipoUsuario;
     this->nombre = nombre;
     this->apellido = apellido;
+    this->sueldo = sueldo;
+    this->clases = clases;
 }
 
 QString Usuario::getUsuario() const { return usuario; }

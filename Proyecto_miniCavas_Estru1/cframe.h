@@ -49,6 +49,8 @@ private slots:
 
     void on_btnEditarUsuario_clicked();
 
+     void on_comboBoxTipoUsuario_currentIndexChanged(int index);
+
 private:
     Ui::cframe *ui;
     bool passwordVisibleRegistro = false;
