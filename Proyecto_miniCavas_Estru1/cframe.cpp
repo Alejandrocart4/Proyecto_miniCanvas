@@ -25,6 +25,16 @@ cframe::cframe(QWidget *parent)
 
     ui->lblsueldo->setVisible(false);
     ui->dSb_SueldoMaestroregistro->setVisible(false);
+    ui->lblsueldoModificar->setVisible(false);
+    ui->dSb_SueldoMaestroModificar->setVisible(false);
+    ui->lblProfesionRegistro->setVisible(false);
+    ui->lineEditProfesionRegistro->setVisible(false);
+    ui->lblCarreraRegistro->setVisible(false);
+    ui->lineEditCarreraRegistro->setVisible(false);
+    ui->lblProfesionModificar->setVisible(false);
+    ui->lineEditProfesionModificar->setVisible(false);
+    ui->lblCarreraModificar->setVisible(false);
+    ui->lineEditCarreraModificar->setVisible(false);
 
 
 
@@ -86,8 +96,6 @@ void cframe::on_btn_registrar_clicked()
     ui->stackedWidget->setCurrentIndex(1);
 }
 
-
-
 void cframe::on_btn_CrearUsuario_clicked()
 {
 
@@ -98,10 +106,18 @@ void cframe::on_btn_CrearUsuario_clicked()
     QString nombre = ui->lineEditNombre->text();
     QString apellido = ui->lineEditApellido->text();
     QString sueldo = "0.00";
+    QString profesion = "";
+    QString carrera = "";
 
 
     if (tipoUsuario == "Maestro") {
         sueldo = QString::number(ui->dSb_SueldoMaestroregistro->value(), 'f', 2);
+        profesion = ui->lineEditProfesionRegistro->text();  // 🔹 Capturar profesión
+        qDebug() << "Capturando datos para Maestro - Sueldo: " << sueldo << ", Profesión: " << profesion;
+    }
+    else if (tipoUsuario == "Alumno") {
+        carrera = ui->lineEditCarreraRegistro->text();  // 🔹 Capturar carrera
+        qDebug() << "Capturando datos para Alumno - Carrera: " << carrera;
     }
 
     if (usuario.isEmpty() || password.isEmpty() || confirmarPassword.isEmpty() || tipoUsuario.isEmpty() || nombre.isEmpty() || apellido.isEmpty()) {
@@ -114,7 +130,7 @@ void cframe::on_btn_CrearUsuario_clicked()
         return;
     }
 
-    Usuario nuevoUsuario(usuario, password, tipoUsuario, nombre, apellido, sueldo);
+    Usuario nuevoUsuario(usuario, password, tipoUsuario, nombre, apellido, sueldo, profesion, carrera);
     LoginManager loginManager("usuarios.bin");
 
     if (loginManager.registrarUsuario(nuevoUsuario)) {
@@ -130,6 +146,8 @@ void cframe::on_btn_CrearUsuario_clicked()
     ui->lineEditNombre->clear();
     ui->lineEditApellido->clear();
     ui->dSb_SueldoMaestroregistro->setValue(0.00);
+    ui->lineEditProfesionRegistro->clear();
+    ui->lineEditCarreraRegistro->clear();
 
 }
 
@@ -280,6 +298,38 @@ void cframe::on_btnBuscarUsuarioEditar_clicked(){
     ui->lineEditNuevaPasswordModificar->setText(usuarioEncontrado.getPassword());
     ui->lineEditConfirmarPasswordModificar->clear();
 
+    if (usuarioEncontrado.getTipoUsuario() == "Maestro") {
+        ui->lblsueldoModificar->setVisible(true);
+        ui->dSb_SueldoMaestroModificar->setVisible(true);
+        ui->dSb_SueldoMaestroModificar->setValue(usuarioEncontrado.getSueldo().toDouble()); // Asigna sueldo
+        ui->lblProfesionModificar->setVisible(true);
+        ui->lineEditProfesionModificar->setVisible(true);
+        ui->lineEditProfesionModificar->setText(usuarioEncontrado.getProfesion()); // Asigna profesión
+
+        ui->lblCarreraModificar->setVisible(false);
+        ui->lineEditCarreraModificar->setVisible(false);
+        qDebug() << "Usuario Maestro encontrado. Mostrando sueldo y profesión.";
+    }
+    else if (usuarioEncontrado.getTipoUsuario() == "Alumno") {
+        ui->lblsueldoModificar->setVisible(false);
+        ui->dSb_SueldoMaestroModificar->setVisible(false);
+        ui->lblProfesionModificar->setVisible(false);
+        ui->lineEditProfesionModificar->setVisible(false);
+
+        ui->lblCarreraModificar->setVisible(true);
+        ui->lineEditCarreraModificar->setVisible(true);
+        ui->lineEditCarreraModificar->setText(usuarioEncontrado.getCarrera()); // Asigna carrera
+        qDebug() << "Usuario Alumno encontrado. Mostrando carrera.";
+    }
+    else {  // Si es tipo "Registro"
+        ui->lblsueldoModificar->setVisible(false);
+        ui->dSb_SueldoMaestroModificar->setVisible(false);
+        ui->lblProfesionModificar->setVisible(false);
+        ui->lineEditProfesionModificar->setVisible(false);
+        ui->lblCarreraModificar->setVisible(false);
+        ui->lineEditCarreraModificar->setVisible(false);
+        qDebug() << "Usuario Registro encontrado. Ocultando sueldo, profesión y carrera.";
+    }
 
     int index = ui->comboBoxTipoUsuarioModificar->findText(usuarioEncontrado.getTipoUsuario());
     if (index != -1) {
@@ -288,7 +338,6 @@ void cframe::on_btnBuscarUsuarioEditar_clicked(){
 
     qDebug() << "Usuario a modificar encontrado:" << usuarioAnterior;
 }
-
 
 void cframe::setUsuarioActivo(const QString &usuario)
 {
@@ -305,14 +354,23 @@ void cframe::on_btnGuardarCambioUsuario_clicked()
     QString confirmarPassword = ui->lineEditConfirmarPasswordModificar->text();
     QString nuevoTipoUsuario = ui->comboBoxTipoUsuarioModificar->currentText();
     QString nuevoSueldo = "0.00";
+    QString nuevaProfesion = "";
+    QString nuevaCarrera = "";
 
     if (nuevoTipoUsuario == "Maestro") {
-        nuevoSueldo = QString::number(ui->dSb_SueldoMaestroregistro->value(), 'f', 2);
+        nuevoSueldo = QString::number(ui->dSb_SueldoMaestroModificar->value(), 'f', 2);
+        nuevaProfesion = ui->lineEditProfesionModificar->text();  // 🔹 Capturar profesión
+        qDebug() << "Capturando datos para Maestro - Sueldo: " << nuevoSueldo << ", Profesión: " << nuevaProfesion;
+    }
+    else if (nuevoTipoUsuario == "Alumno") {
+        nuevaCarrera = ui->lineEditCarreraModificar->text();  // 🔹 Capturar carrera
+        qDebug() << "Capturando datos para Alumno - Carrera: " << nuevaCarrera;
     }
 
     qDebug() << "Intentando modificar el usuario:" << usuarioAnterior << " por " << nuevoUsuario;
 
-    if (nuevoUsuario.isEmpty() || nuevoNombre.isEmpty() || nuevoApellido.isEmpty() || nuevaPassword.isEmpty() || confirmarPassword.isEmpty()) {
+    if (nuevoUsuario.isEmpty() || nuevoNombre.isEmpty() || nuevoApellido.isEmpty() || nuevaPassword.isEmpty() ||
+        confirmarPassword.isEmpty()) {
         QMessageBox::warning(this, "Error", "Todos los campos son obligatorios.");
         return;
     }
@@ -325,7 +383,8 @@ void cframe::on_btnGuardarCambioUsuario_clicked()
 
     LoginManager loginManager("usuarios.bin");
 
-    if (loginManager.modificarUsuario(usuarioAnterior, nuevoUsuario, nuevaPassword, nuevoNombre, nuevoApellido, nuevoTipoUsuario,nuevoSueldo)) {
+    if (loginManager.modificarUsuario(usuarioAnterior, nuevoUsuario, nuevaPassword, nuevoNombre, nuevoApellido,
+                                      nuevoTipoUsuario,nuevoSueldo, nuevaProfesion, nuevaCarrera)) {
         QMessageBox::information(this, "Éxito", "Usuario modificado correctamente.");
         usuarioAnterior = nuevoUsuario;  // Actualizar el usuario modificado
         ui->lineEditUsuarioModificar->setText(nuevoUsuario);
@@ -339,7 +398,6 @@ void cframe::on_btnEditarUsuario_clicked()
     ui->stackedWidget_2->setCurrentIndex(3);
 }
 
-
 void cframe::on_comboBoxTipoUsuario_activated(int index)
 {
     QString tipoUsuario = ui->comboBoxTipoUsuario->itemText(index);
@@ -347,11 +405,62 @@ void cframe::on_comboBoxTipoUsuario_activated(int index)
     if (tipoUsuario == "Maestro") {
         ui->lblsueldo->setVisible(true);
         ui->dSb_SueldoMaestroregistro->setVisible(true);
-        qDebug() << "Tipo de usuario seleccionado: Maestro - Mostrando sueldo";
-    } else {
+        ui->lblProfesionRegistro->setVisible(true);
+        ui->lineEditProfesionRegistro->setVisible(true);
+
+        ui->lblCarreraRegistro->setVisible(false);
+        ui->lineEditCarreraRegistro->setVisible(false);
+    }
+    else if (tipoUsuario == "Alumno") {
         ui->lblsueldo->setVisible(false);
         ui->dSb_SueldoMaestroregistro->setVisible(false);
-        qDebug() << "Tipo de usuario seleccionado: " << tipoUsuario << " - Ocultando sueldo";
+        ui->lblProfesionRegistro->setVisible(false);
+        ui->lineEditProfesionRegistro->setVisible(false);
+
+        ui->lblCarreraRegistro->setVisible(true);
+        ui->lineEditCarreraRegistro->setVisible(true);
     }
+    else {  // Si es tipo "Registro"
+        ui->lblsueldo->setVisible(false);
+        ui->dSb_SueldoMaestroregistro->setVisible(false);
+        ui->lblProfesionRegistro->setVisible(false);
+        ui->lineEditProfesionRegistro->setVisible(false);
+        ui->lblCarreraRegistro->setVisible(false);
+        ui->lineEditCarreraRegistro->setVisible(false);
+    }
+}
+
+
+void cframe::on_comboBoxTipoUsuarioModificar_activated(int index)
+{
+    QString tipoUsuario = ui->comboBoxTipoUsuarioModificar->itemText(index);
+
+    if (tipoUsuario == "Maestro") {
+        ui->lblsueldoModificar->setVisible(true);
+        ui->dSb_SueldoMaestroModificar->setVisible(true);
+        ui->lblProfesionModificar->setVisible(true);
+        ui->lineEditProfesionModificar->setVisible(true);
+
+        ui->lblCarreraModificar->setVisible(false);
+        ui->lineEditCarreraModificar->setVisible(false);
+    }
+    else if (tipoUsuario == "Alumno") {
+        ui->lblsueldoModificar->setVisible(false);
+        ui->dSb_SueldoMaestroModificar->setVisible(false);
+        ui->lblProfesionModificar->setVisible(false);
+        ui->lineEditProfesionModificar->setVisible(false);
+
+        ui->lblCarreraModificar->setVisible(true);
+        ui->lineEditCarreraModificar->setVisible(true);
+    }
+    else {  // Si es tipo "Registro"
+        ui->lblsueldoModificar->setVisible(false);
+        ui->dSb_SueldoMaestroModificar->setVisible(false);
+        ui->lblProfesionModificar->setVisible(false);
+        ui->lineEditProfesionModificar->setVisible(false);
+        ui->lblCarreraModificar->setVisible(false);
+        ui->lineEditCarreraModificar->setVisible(false);
+    }
+
 }
 

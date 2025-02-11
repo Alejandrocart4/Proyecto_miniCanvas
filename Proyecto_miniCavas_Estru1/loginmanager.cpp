@@ -19,6 +19,9 @@ bool LoginManager::registrarUsuario(const Usuario &usuario) {
 
     if (usuario.getTipoUsuario() == "Maestro") {
         out << usuario.getSueldo();
+        out << usuario.getProfesion();
+    } else if (usuario.getTipoUsuario() == "Alumno") {
+        out << usuario.getCarrera();
     }
 
     file.flush();
@@ -53,7 +56,6 @@ QList<QString> LoginManager::obtenerClasesUsuario(const QString &usuario)
     return clases;
 }
 
-
 // Autenticar usuario y devolver su objeto completo
 Usuario LoginManager::autenticarUsuario(const QString &usuario, const QString &password) {
     QFile file(archivoUsuarios);
@@ -63,7 +65,7 @@ Usuario LoginManager::autenticarUsuario(const QString &usuario, const QString &p
     }
 
     QDataStream in(&file);
-    QString u, p, tipo, nombre, apellido, sueldo;
+    QString u, p, tipo, nombre, apellido, sueldo, profesion, carrera;
 
     qDebug() << "Buscando usuario:" << usuario;
 
@@ -74,12 +76,17 @@ Usuario LoginManager::autenticarUsuario(const QString &usuario, const QString &p
 
         if (tipo == "Maestro") {
             in >> sueldo;
+            in >> profesion;
+            qDebug() << "Leyendo profesión: " << profesion;
+        } else if (tipo == "Alumno") {
+            in >> carrera;
+            qDebug() << "Leyendo carrera: " << carrera;
         }
 
         qDebug() << "Usuario en archivo:" << u;
 
         if (u == usuario && (password.isEmpty() || p == password)) {
-            return Usuario(u, p, tipo, nombre, apellido, sueldo);
+            return Usuario(u, p, tipo, nombre, apellido, sueldo, profesion, carrera);
         }
     }
 
@@ -87,6 +94,7 @@ Usuario LoginManager::autenticarUsuario(const QString &usuario, const QString &p
     qDebug() << "Usuario no encontrado";
     return Usuario();
 }
+
 bool LoginManager::eliminarUsuario(const QString &usuario)
 {
     QFile file(archivoUsuarios);
@@ -102,23 +110,27 @@ bool LoginManager::eliminarUsuario(const QString &usuario)
     in.setVersion(QDataStream::Qt_6_0);
     out.setVersion(QDataStream::Qt_6_0);
 
-    QString u, p, tipo, nombre, apellido, sueldo;
+    QString u, p, tipo, nombre, apellido, sueldo, profesion, carrera;
     bool eliminado = false;
 
     while (!in.atEnd()) {
         in >> u >> p >> tipo >> nombre >> apellido;
         if (tipo == "Maestro") {
             in >> sueldo;
+            in >> profesion;
+        } else if (tipo == "Alumno") {
+            in >> carrera;
         }
 
         if (u == usuario) {
             eliminado = true;
-            qDebug() << "Usuario eliminado:" << usuario;
         } else {
-
             out << u << p << tipo << nombre << apellido;
             if (tipo == "Maestro") {
                 out << sueldo;
+                out << profesion;
+            } else if (tipo == "Alumno") {
+                out << carrera;
             }
         }
     }
@@ -135,8 +147,8 @@ bool LoginManager::eliminarUsuario(const QString &usuario)
 bool LoginManager::modificarUsuario(const QString &usuarioAnterior, const QString &nuevoUsuario,
                                     const QString &nuevaPassword, const QString &nuevoNombre,
                                     const QString &nuevoApellido, const QString &nuevoTipoUsuario,
-                                    const QString &nuevoSueldo)
-{
+                                    const QString &nuevoSueldo, const QString &nuevaProfesion,
+                                    const QString &nuevaCarrera){
     QFile file(archivoUsuarios);
     QFile tempFile("temp.bin");
 
@@ -149,13 +161,16 @@ bool LoginManager::modificarUsuario(const QString &usuarioAnterior, const QStrin
     QDataStream out(&tempFile);
     out.setVersion(QDataStream::Qt_6_0);
 
-    QString u, p, tipo, nombre, apellido, sueldo;
+    QString u, p, tipo, nombre, apellido, sueldo, profesion, carrera;
     bool modificado = false;
 
     while (!in.atEnd()) {
         in >> u >> p >> tipo >> nombre >> apellido;
         if (tipo == "Maestro") {
             in >> sueldo;
+            in >> profesion;
+        } else if (tipo == "Alumno") {
+            in >> carrera;
         }
 
         if (u == usuarioAnterior) {
@@ -164,12 +179,20 @@ bool LoginManager::modificarUsuario(const QString &usuarioAnterior, const QStrin
 
             if (nuevoTipoUsuario == "Maestro") {
                 out << nuevoSueldo;
+                out << nuevaProfesion;  // 🔹 Guardar nueva profesión.
+                qDebug() << "Guardando nueva profesión: " << nuevaProfesion;
+            } else if (nuevoTipoUsuario == "Alumno") {
+                out << nuevaCarrera;    // 🔹 Guardar nueva carrera
+                qDebug() << "Guardando nueva carrera: " << nuevaCarrera;
             }
             modificado = true;
         } else {
             out << u << p << tipo << nombre << apellido;
             if (tipo == "Maestro") {
                 out << sueldo;
+                out << profesion;
+            } else if (tipo == "Alumno") {
+                out << carrera;
             }
         }
     }
