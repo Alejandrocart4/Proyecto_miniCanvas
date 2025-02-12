@@ -1,4 +1,4 @@
-#ifndef CLASE_H
+ #ifndef CLASE_H
 #define CLASE_H
 
 #include <QString>
@@ -7,9 +7,7 @@ class Clase {
 public:
     Clase();
     Clase(const QString &id, const QString &nombre, const QString &hora,
-          int unidadesValorativas, int semestre, int periodo, int año,
-          const QString &usuarioAsociado);
-
+          int unidadesValorativas, int semestre, int periodo, int año);
     QString getID() const;
     QString getNombre() const;
     QString getHora() const;

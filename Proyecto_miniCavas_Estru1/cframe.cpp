@@ -2,6 +2,9 @@
 #include "ui_cframe.h"
 #include "qmessagebox.h"
 #include "loginmanager.h"
+#include "clase.h"
+#include "manejadorclases.h"
+#include <QList>
 
 cframe::cframe(QWidget *parent)
     : QMainWindow(parent)
@@ -36,6 +39,21 @@ cframe::cframe(QWidget *parent)
     ui->lblCarreraModificar->setVisible(false);
     ui->lineEditCarreraModificar->setVisible(false);
 
+    // Configurar valores en los ComboBox
+    ui->comboBoxSemestre->clear();
+    ui->comboBoxSemestre->addItems({"1", "2"});
+
+    ui->comboBoxPeriodo->clear();
+    ui->comboBoxPeriodo->addItems({"Ordinario", "Intersemestral"});
+
+    // Configurar los SpinBox
+    ui->spinBoxAnio->setRange(2020, 2050);
+    ui->spinBoxAnio->setValue(2024);
+
+    ui->spinBoxUV->setRange(1, 10);
+    ui->spinBoxUV->setValue(3);
+
+    cargarClasesEnComboBoxModificar();
 
 
 }
@@ -430,7 +448,6 @@ void cframe::on_comboBoxTipoUsuario_activated(int index)
     }
 }
 
-
 void cframe::on_comboBoxTipoUsuarioModificar_activated(int index)
 {
     QString tipoUsuario = ui->comboBoxTipoUsuarioModificar->itemText(index);
@@ -462,5 +479,126 @@ void cframe::on_comboBoxTipoUsuarioModificar_activated(int index)
         ui->lineEditCarreraModificar->setVisible(false);
     }
 
+}
+
+void cframe::on_pushButton_6_clicked()
+{
+    ui->stackedWidget_2->setCurrentIndex(4);
+}
+
+void cframe::on_btnCrearClase_clicked()
+{
+    QString id = ui->lineEditIDClase->text();
+    QString nombre = ui->lineEditNombreClase->text();
+    QString hora = ui->timeEditHoraClase->time().toString("HH:mm");
+    int unidadesValorativas = ui->spinBoxUV->value();
+    int semestre = ui->comboBoxSemestre->currentText().toInt();
+    //QString periodo = ui->comboBoxPeriodo->currentText();
+    int año = ui->spinBoxAnio->value();
+
+    int periodo = (ui->comboBoxPeriodo->currentText() == "Ordinario") ? 1 : 2;
+
+    if (id.isEmpty() || nombre.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Todos los campos son obligatorios.");
+        return;
+    }
+
+
+    Clase nuevaClase(id, nombre, hora, unidadesValorativas, semestre, periodo, año);
+    ManejadorClases manejador("clases.bin");
+
+    if (manejador.agregarClase(nuevaClase)) {
+        QMessageBox::information(this, "Éxito", "Clase creada exitosamente.");
+        // Limpiar los campos después de registrar
+        ui->lineEditIDClase->clear();
+        ui->lineEditNombreClase->clear();
+        ui->timeEditHoraClase->setTime(QTime(8, 0));
+        ui->spinBoxUV->setValue(3);
+        ui->comboBoxSemestre->setCurrentIndex(0);
+        ui->comboBoxPeriodo->setCurrentIndex(0);
+        ui->spinBoxAnio->setValue(2024);
+    } else {
+        QMessageBox::critical(this, "Error", "No se pudo crear la clase.");
+    }
+}
+
+void cframe::cargarClasesEnComboBoxModificar() {
+    ui->comboBoxBuscarClase->clear();  // Limpiar comboBox
+
+    ManejadorClases manejador("clases.bin");
+    QList<Clase> listaClases = manejador.obtenerClases();
+
+    for (const Clase &clase : listaClases) {
+        ui->comboBoxBuscarClase->addItem(clase.getID());  // Agregar ID de la clase
+    }
+
+    if (listaClases.isEmpty()) {
+        QMessageBox::warning(this, "Aviso", "No hay clases disponibles para modificar.");
+    }
+}
+
+void cframe::on_btnGuardarCambiosClase_clicked() {
+    QString nuevoID = ui->lineEditIDClaseModificar->text();
+    QString nuevoNombre = ui->lineEditNombreClaseModificar->text();
+    QString nuevaHora = ui->timeEditHoraClaseModificar->time().toString("HH:mm");
+    int nuevasUV = ui->spinBoxUVModificar->value();
+    int nuevoSemestre = ui->comboBoxSemestreModificar->currentIndex() + 1;
+    int nuevoPeriodo = (ui->comboBoxPeriodoModificar->currentIndex() == 0) ? 1 : 2;
+    int nuevoAño = ui->spinBoxAnioModificar->value();
+
+    if (nuevoID.isEmpty() || nuevoNombre.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Todos los campos son obligatorios.");
+        return;
+    }
+
+    Clase nuevaClase(nuevoID, nuevoNombre, nuevaHora, nuevasUV, nuevoSemestre, nuevoPeriodo, nuevoAño);
+    ManejadorClases manejador("clases.bin");
+
+    bool exito = manejador.modificarClase(idClaseAnterior, nuevaClase);
+
+    if (exito) {
+        QMessageBox::information(this, "Éxito", "Clase modificada correctamente.");
+        cargarClasesEnComboBoxModificar();  // 🔄 Recargar el ComboBox con los datos actualizados
+    } else {
+        QMessageBox::critical(this, "Error", "No se pudo modificar la clase.");
+    }
+}
+
+void cframe::on_pushButton_5_clicked()
+{
+    ui->stackedWidget_2->setCurrentIndex(5);
+}
+
+void cframe::on_btnBuscarClaseModificar_clicked()
+{
+    QString idClaseBuscada = ui->comboBoxBuscarClase->currentText();
+    if (idClaseBuscada.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Seleccione una clase para modificar.");
+        return;
+    }
+
+    ManejadorClases manejador("clases.bin");
+    QList<Clase> listaClases = manejador.obtenerClases();
+
+    for (const Clase &clase : listaClases) {
+        if (clase.getID() == idClaseBuscada) {
+            // Guardar ID anterior por si se modifica
+            idClaseAnterior = clase.getID();
+
+            // Llenar los campos con los datos actuales de la clase
+            ui->lineEditIDClaseModificar->setText(clase.getID());
+            ui->lineEditNombreClaseModificar->setText(clase.getNombre());
+            ui->timeEditHoraClaseModificar->setTime(QTime::fromString(clase.getHora(), "HH:mm"));
+            ui->spinBoxUVModificar->setValue(clase.getUnidadesValorativas());
+            ui->comboBoxSemestreModificar->setCurrentIndex(clase.getSemestre() - 1);
+            ui->comboBoxPeriodoModificar->setCurrentIndex(clase.getPeriodo() == 1 ? 0 : 1);
+            ui->spinBoxAnioModificar->setValue(clase.getAño());
+
+            qDebug() << "Clase cargada para modificar: " << clase.getID();
+            return;
+        }
+    }
+
+    QMessageBox::warning(this, "Error", "No se encontró la clase.");
 }
 

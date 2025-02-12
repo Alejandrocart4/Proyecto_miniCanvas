@@ -3,8 +3,7 @@
 Clase::Clase() {}
 
 Clase::Clase(const QString &id, const QString &nombre, const QString &hora,
-             int unidadesValorativas, int semestre, int periodo, int año,
-             const QString &usuarioAsociado)
+             int unidadesValorativas, int semestre, int periodo, int año)
 {
     this->id = id;
     this->nombre = nombre;

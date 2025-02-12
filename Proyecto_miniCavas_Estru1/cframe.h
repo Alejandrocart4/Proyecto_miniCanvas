@@ -56,6 +56,15 @@ private slots:
 
     void on_comboBoxTipoUsuarioModificar_activated(int index);
 
+    void on_pushButton_6_clicked();
+
+
+    void on_btnCrearClase_clicked();
+
+    void on_pushButton_5_clicked();
+
+    void on_btnBuscarClaseModificar_clicked();
+
 private:
     Ui::cframe *ui;
     bool passwordVisibleRegistro = false;
@@ -64,5 +73,8 @@ private:
     QString usuarioActivo;
     QString usuarioAnterior;
     //void on_comboBoxTipoUsuarioModificar_currentIndexChanged(int index);
+    void cargarClasesEnComboBoxModificar();
+    void on_btnGuardarCambiosClase_clicked();
+    QString idClaseAnterior;
 };
 #endif // CFRAME_H

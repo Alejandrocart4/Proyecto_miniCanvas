@@ -10,7 +10,7 @@ public:
     ManejadorClases(const QString &archivo);
 
     bool agregarClase(const Clase &clase);
-    bool modificarClase(const QString &id, const Clase &nuevaClase);
+    bool modificarClase(const QString &idViejo, const Clase &nuevaClase);
     bool eliminarClase(const QString &id);
     QList<Clase> obtenerClases();
 
