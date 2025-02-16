@@ -4,7 +4,6 @@ LoginManager::LoginManager(const QString &archivoUsuarios) {
     this->archivoUsuarios = archivoUsuarios;
 }
 
-
 bool LoginManager::registrarUsuario(const Usuario &usuario) {
     QFile file(archivoUsuarios);
     if (!file.open(QIODevice::Append)) {
@@ -208,4 +207,35 @@ bool LoginManager::modificarUsuario(const QString &usuarioAnterior, const QStrin
     }
 
     return modificado;
+}
+
+QList<Usuario> LoginManager::obtenerUsuarios() {
+    QFile file(archivoUsuarios);
+    QList<Usuario> usuarios;
+
+    if (!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "🚨 Error: No se pudo abrir el archivo de usuarios.";
+        return usuarios;
+    }
+
+    QDataStream in(&file);
+    in.setVersion(QDataStream::Qt_6_0);
+
+    QString usuario, password, tipoUsuario, nombre, apellido, sueldo, profesion, carrera;
+
+    while (!in.atEnd()) {
+        in >> usuario >> password >> tipoUsuario >> nombre >> apellido;
+
+        if (tipoUsuario == "Maestro") {
+            in >> sueldo >> profesion;
+            usuarios.append(Usuario(usuario, password, tipoUsuario, nombre, apellido, sueldo, profesion, ""));
+        } else if (tipoUsuario == "Alumno") {
+            in >> carrera;
+            usuarios.append(Usuario(usuario, password, tipoUsuario, nombre, apellido, "", "", carrera));
+        }
+    }
+
+    file.close();
+    qDebug() << "✅ Usuarios cargados desde usuarios.bin: " << usuarios.size();
+    return usuarios;
 }

@@ -65,6 +65,32 @@ private slots:
 
     void on_btnBuscarClaseModificar_clicked();
 
+
+    void on_btnGuardarCambiosClas_clicked();
+
+    void on_pushButton_7_clicked();
+
+    void on_pushButton_9_clicked();
+
+    void on_btnAsignarMaestro_clicked();
+
+    void on_pushButton_10_clicked();
+
+    void on_btnMatricularAlumno_clicked();
+
+
+    void on_btnDesmatricularAlumno_clicked();
+
+    void on_pushButton_11_clicked();
+
+
+
+    void on_comboBoxClaseMatricularAlumno_currentIndexChanged(int index);
+
+    void on_btnBuscarClaseEliminar_clicked();
+
+    void on_btnEliminarClase_clicked();
+
 private:
     Ui::cframe *ui;
     bool passwordVisibleRegistro = false;
@@ -72,9 +98,20 @@ private:
     void mostrarTablaClases(bool visible);
     QString usuarioActivo;
     QString usuarioAnterior;
-    //void on_comboBoxTipoUsuarioModificar_currentIndexChanged(int index);
     void cargarClasesEnComboBoxModificar();
-    void on_btnGuardarCambiosClase_clicked();
     QString idClaseAnterior;
+    void cargarClasesEnComboBoxAsignarMaestro();
+    void cargarMaestrosEnComboBox();
+    void cargarClasesEnComboBoxMatricularAlumno();
+    void cargarAlumnosDisponibles();
+    void cargarAlumnosMatriculados();
+    void actualizarUI();
+
+   void debugMostrarUsuarios();
+   void debugMostrarAlumnosMatriculados();
+   void cargarClasesEnComboBoxEliminar();
+
+
+
 };
 #endif // CFRAME_H

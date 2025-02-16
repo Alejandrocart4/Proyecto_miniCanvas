@@ -10,17 +10,21 @@ CONFIG += c++17
 
 SOURCES += \
     clase.cpp \
+    examen.cpp \
     loginmanager.cpp \
     main.cpp \
     cframe.cpp \
     manejadorclases.cpp \
+    manejadorexamenes.cpp \
     usuario.cpp
 
 HEADERS += \
     cframe.h \
     clase.h \
+    examen.h \
     loginmanager.h \
     manejadorclases.h \
+    manejadorexamenes.h \
     usuario.h
 
 FORMS += \

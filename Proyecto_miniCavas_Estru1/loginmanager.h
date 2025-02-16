@@ -10,6 +10,9 @@
 class LoginManager {
 public:
     LoginManager(const QString &archivoUsuarios);
+
+    QList<Usuario> obtenerUsuarios();
+
     bool registrarUsuario(const Usuario &usuario);
     Usuario autenticarUsuario(const QString &usuario, const QString &password);
     QList<QString> obtenerClasesUsuario(const QString &usuario);
@@ -19,6 +22,8 @@ public:
                           const QString &nuevoApellido, const QString &nuevoTipoUsuario,
                           const QString &nuevoSueldo, const QString &nuevaProfesion,
                           const QString &nuevaCarrera);
+
+
 private:
     QString archivoUsuarios;
 };

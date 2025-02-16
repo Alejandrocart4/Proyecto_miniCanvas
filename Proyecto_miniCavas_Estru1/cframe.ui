@@ -185,6 +185,13 @@
         <height>29</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI Semibold</family>
+        <pointsize>10</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>Cerrar Sesión</string>
       </property>
@@ -194,9 +201,16 @@
        <rect>
         <x>270</x>
         <y>50</y>
-        <width>1121</width>
+        <width>1241</width>
         <height>741</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI Semibold</family>
+        <pointsize>10</pointsize>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="currentIndex">
        <number>5</number>
@@ -1213,7 +1227,7 @@
          </property>
         </item>
        </widget>
-       <widget class="QPushButton" name="btnGuardarCambiosClase">
+       <widget class="QPushButton" name="btnGuardarCambiosClas">
         <property name="geometry">
          <rect>
           <x>530</x>
@@ -1349,7 +1363,7 @@
          </rect>
         </property>
        </widget>
-       <widget class="QComboBox" name="comboBoxBuscarClase">
+       <widget class="QComboBox" name="comboBoxBuscarClaseModificar">
         <property name="geometry">
          <rect>
           <x>260</x>
@@ -1386,15 +1400,433 @@
         </property>
        </widget>
       </widget>
+      <widget class="QWidget" name="page_11">
+       <widget class="QLabel" name="label_40">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>160</y>
+          <width>151</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI Semibold</family>
+          <pointsize>10</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Nombre de la clase: </string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_41">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>80</y>
+          <width>141</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI Semibold</family>
+          <pointsize>10</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Seleccionar Clase:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_43">
+        <property name="geometry">
+         <rect>
+          <x>520</x>
+          <y>160</y>
+          <width>211</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI Semibold</family>
+          <pointsize>10</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Maestro a Cargo:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_44">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>270</y>
+          <width>171</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI Semibold</family>
+          <pointsize>10</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Alumnos Matriculados:</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBoxClaseEliminar">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>100</y>
+          <width>191</width>
+          <height>28</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QListWidget" name="listWidgetAlumnosClaseEliminar">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>290</y>
+          <width>401</width>
+          <height>301</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnBuscarClaseEliminar">
+        <property name="geometry">
+         <rect>
+          <x>350</x>
+          <y>100</y>
+          <width>83</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI Semibold</family>
+          <pointsize>10</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Buscar</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnEliminarClase">
+        <property name="geometry">
+         <rect>
+          <x>690</x>
+          <y>420</y>
+          <width>83</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI Semibold</family>
+          <pointsize>10</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Eliminar</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="labelMostrarNombreClase">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>180</y>
+          <width>251</width>
+          <height>28</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="labelMaestroClaseEliminar">
+        <property name="geometry">
+         <rect>
+          <x>520</x>
+          <y>180</y>
+          <width>261</width>
+          <height>28</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_12">
+       <widget class="QPushButton" name="pushButton_10">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>290</y>
+          <width>83</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI Semibold</family>
+          <pointsize>10</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Maestro</string>
+        </property>
+       </widget>
+       <widget class="QStackedWidget" name="stackedWidget_3">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>20</y>
+          <width>1051</width>
+          <height>701</height>
+         </rect>
+        </property>
+        <property name="currentIndex">
+         <number>2</number>
+        </property>
+        <widget class="QWidget" name="page_13">
+         <widget class="QPushButton" name="btnMatricularAlumno">
+          <property name="geometry">
+           <rect>
+            <x>140</x>
+            <y>590</y>
+            <width>83</width>
+            <height>29</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI Semibold</family>
+            <pointsize>10</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Matricular</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBoxClaseMatricularAlumno">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>90</y>
+            <width>181</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_36">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>190</y>
+            <width>221</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI Semibold</family>
+            <pointsize>10</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Alumnos Disponibles:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_37">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>70</y>
+            <width>131</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI Semibold</family>
+            <pointsize>10</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Seleccionar clase:</string>
+          </property>
+         </widget>
+         <widget class="QListWidget" name="listWidgetAlumnosMatriculados">
+          <property name="geometry">
+           <rect>
+            <x>580</x>
+            <y>210</y>
+            <width>391</width>
+            <height>341</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="btnDesmatricularAlumno">
+          <property name="geometry">
+           <rect>
+            <x>680</x>
+            <y>590</y>
+            <width>121</width>
+            <height>31</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI Semibold</family>
+            <pointsize>10</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Desmatricular</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_38">
+          <property name="geometry">
+           <rect>
+            <x>580</x>
+            <y>190</y>
+            <width>181</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Segoe UI Semibold</family>
+            <pointsize>10</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Alumnos Matriculados:</string>
+          </property>
+         </widget>
+         <widget class="QListWidget" name="listWidgetAlumnosDisponibles">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>210</y>
+            <width>391</width>
+            <height>341</height>
+           </rect>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="page_14">
+         <widget class="QComboBox" name="comboBoxMaestroAsignar">
+          <property name="geometry">
+           <rect>
+            <x>520</x>
+            <y>190</y>
+            <width>231</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBoxClaseAsignarMaestro">
+          <property name="geometry">
+           <rect>
+            <x>170</x>
+            <y>190</y>
+            <width>231</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_34">
+          <property name="geometry">
+           <rect>
+            <x>520</x>
+            <y>170</y>
+            <width>141</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Seleccionar Maestro:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_35">
+          <property name="geometry">
+           <rect>
+            <x>170</x>
+            <y>170</y>
+            <width>131</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Seleccionar clase:</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="btnAsignarMaestro">
+          <property name="geometry">
+           <rect>
+            <x>410</x>
+            <y>420</y>
+            <width>83</width>
+            <height>29</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Asignar</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="page_15"/>
+       </widget>
+       <widget class="QPushButton" name="pushButton_11">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>380</y>
+          <width>83</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI Semibold</family>
+          <pointsize>10</pointsize>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Alumno</string>
+        </property>
+       </widget>
+      </widget>
      </widget>
      <widget class="QPushButton" name="pushButton_3">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>60</x>
         <y>150</y>
         <width>83</width>
         <height>29</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI Semibold</family>
+        <pointsize>10</pointsize>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="text">
        <string>Añadir</string>
@@ -1403,11 +1835,18 @@
      <widget class="QPushButton" name="pushButton_4">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>60</x>
         <y>210</y>
         <width>83</width>
         <height>29</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI Semibold</family>
+        <pointsize>10</pointsize>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="text">
        <string>Eliminar </string>
@@ -1416,11 +1855,18 @@
      <widget class="QPushButton" name="btnEditarUsuario">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>60</x>
         <y>270</y>
         <width>83</width>
         <height>29</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI Semibold</family>
+        <pointsize>10</pointsize>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="text">
        <string>Editar Usuario</string>
@@ -1429,11 +1875,18 @@
      <widget class="QPushButton" name="pushButton_6">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>60</x>
         <y>330</y>
         <width>83</width>
         <height>29</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI Semibold</family>
+        <pointsize>10</pointsize>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="text">
        <string>Añadir clase</string>
@@ -1442,11 +1895,18 @@
      <widget class="QPushButton" name="pushButton_5">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>60</x>
         <y>390</y>
         <width>83</width>
         <height>29</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI Semibold</family>
+        <pointsize>10</pointsize>
+        <bold>true</bold>
+       </font>
       </property>
       <property name="text">
        <string>Modificar Clase</string>
@@ -1455,14 +1915,41 @@
      <widget class="QPushButton" name="pushButton_7">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>60</x>
         <y>450</y>
         <width>83</width>
         <height>29</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI Semibold</family>
+        <pointsize>10</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="text">
        <string>Eliminar Clase</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_9">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>500</y>
+        <width>83</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Segoe UI Semibold</family>
+        <pointsize>10</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Asignar clase</string>
       </property>
      </widget>
     </widget>
