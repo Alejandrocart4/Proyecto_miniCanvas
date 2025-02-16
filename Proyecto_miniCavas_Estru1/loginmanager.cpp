@@ -178,10 +178,10 @@ bool LoginManager::modificarUsuario(const QString &usuarioAnterior, const QStrin
 
             if (nuevoTipoUsuario == "Maestro") {
                 out << nuevoSueldo;
-                out << nuevaProfesion;  // 🔹 Guardar nueva profesión.
+                out << nuevaProfesion;  //  Guardar nueva profesión.
                 qDebug() << "Guardando nueva profesión: " << nuevaProfesion;
             } else if (nuevoTipoUsuario == "Alumno") {
-                out << nuevaCarrera;    // 🔹 Guardar nueva carrera
+                out << nuevaCarrera;    //  Guardar nueva carrera
                 qDebug() << "Guardando nueva carrera: " << nuevaCarrera;
             }
             modificado = true;
@@ -214,7 +214,7 @@ QList<Usuario> LoginManager::obtenerUsuarios() {
     QList<Usuario> usuarios;
 
     if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << "🚨 Error: No se pudo abrir el archivo de usuarios.";
+        qDebug() << "Error: No se pudo abrir el archivo de usuarios.";
         return usuarios;
     }
 
@@ -236,6 +236,6 @@ QList<Usuario> LoginManager::obtenerUsuarios() {
     }
 
     file.close();
-    qDebug() << "✅ Usuarios cargados desde usuarios.bin: " << usuarios.size();
+    qDebug() << "Usuarios cargados desde usuarios.bin: " << usuarios.size();
     return usuarios;
 }

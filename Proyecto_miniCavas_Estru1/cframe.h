@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 //#include <QResizeEvent>
+#include <QComboBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -91,6 +92,24 @@ private slots:
 
     void on_btnEliminarClase_clicked();
 
+    void on_pushButton_15_clicked();
+
+    void on_btnAgregarPreguntaCrear_clicked();
+
+    void on_btnEliminarPreguntaCrear_clicked();
+
+    void on_btnCrearExamen_clicked();
+
+    void on_pushButton_12_clicked();
+
+    void on_pushButton_13_clicked();
+
+    void on_pushButton_14_clicked();
+
+    void on_btnModificarExamen_clicked();
+
+    void on_comboBoxExamenModificar_currentIndexChanged(int index);
+
 private:
     Ui::cframe *ui;
     bool passwordVisibleRegistro = false;
@@ -110,6 +129,9 @@ private:
    void debugMostrarUsuarios();
    void debugMostrarAlumnosMatriculados();
    void cargarClasesEnComboBoxEliminar();
+   void cargarClasesDeMaestro(QComboBox *comboBox);
+   void actualizarOpcionesRespuestaCrear(int row, int column);
+   void cargarExamenesEnComboBox();
 
 
 

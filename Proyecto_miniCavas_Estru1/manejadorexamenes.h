@@ -12,6 +12,8 @@ public:
     bool modificarExamen(const QString &idViejo, const Examen &nuevoExamen);
     bool eliminarExamen(const QString &id);
     QList<Examen> obtenerExamenes();
+    Examen obtenerExamen(const QString &id);
+
 
 private:
     QString archivoExamenes;

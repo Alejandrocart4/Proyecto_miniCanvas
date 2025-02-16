@@ -4,8 +4,10 @@
 #include "loginmanager.h"
 #include "clase.h"
 #include "manejadorclases.h"
-#include "manejadorclases.h"
+#include "manejadorexamenes.h"
 #include <QList>
+#include <QComboBox>
+#include "examen.h"
 
 cframe::cframe(QWidget *parent)
     : QMainWindow(parent)
@@ -15,8 +17,6 @@ cframe::cframe(QWidget *parent)
     setWindowState(Qt::WindowMaximized);
     ui->tableClasesUsuario->setVisible(false);
 
-    ui->btnsalir->setStyleSheet("background-color: rgba(0,0,0,0); border: none;");
-    ui->btn_registrar->setStyleSheet("background-color: rgba(0,0,0,0); border: none; color: blue; text-decoration: underline;");
     ui->btn_registrar->setCursor(Qt::PointingHandCursor);
 
     ui->lineEditPassword->setEchoMode(QLineEdit::Password);
@@ -67,6 +67,11 @@ cframe::cframe(QWidget *parent)
     cargarClasesEnComboBoxEliminar();
     cargarClasesEnComboBoxMatricularAlumno();
 
+    cargarClasesDeMaestro(ui->comboBoxClaseCrear);
+    cargarClasesDeMaestro(ui->comboBoxClaseModificar);
+    cargarClasesDeMaestro(ui->comboBoxClaseEliminar);
+
+
 
 }
 
@@ -107,10 +112,10 @@ void cframe::on_btn_Login_clicked()
         ui->stackedWidget->setCurrentIndex(1); // Ir a ventana de Registro
     } else if (tipoUsuario == "Maestro") {
          QMessageBox::information(this, "Bienvenido", "¡Bienvenido, " + nombreCompleto + "!");
-        ui->stackedWidget->setCurrentIndex(2); // Ir a ventana de Maestro
+        ui->stackedWidget->setCurrentIndex(3); // Ir a ventana de Maestro
     } else if (tipoUsuario == "Alumno") {
          QMessageBox::information(this, "Bienvenido", "¡Bienvenido, " + nombreCompleto + "!");
-        ui->stackedWidget->setCurrentIndex(3); // Ir a ventana de Alumno
+        ui->stackedWidget->setCurrentIndex(2); // Ir a ventana de Alumno
     } else     if (usuario.isEmpty() || password.isEmpty()) {
         QMessageBox::warning(this, "Error", "Debe de llenar todos los espacios.");
         return;
@@ -575,15 +580,15 @@ void cframe::on_btnBuscarClaseModificar_clicked()
             ui->spinBoxUVModificar->setValue(clase.getUnidadesValorativas());
             ui->spinBoxAnioModificar->setValue(clase.getAño());
 
-            // 🔹 Actualizar Semestre y Periodo correctamente
-            int indexSemestre = clase.getSemestre() - 1;  // Ajustamos índice (Qt usa base 0)
+
+            int indexSemestre = clase.getSemestre() - 1;
             if (indexSemestre >= 0 && indexSemestre < ui->comboBoxSemestreModificar->count()) {
                 ui->comboBoxSemestreModificar->setCurrentIndex(indexSemestre);
             } else {
                 qDebug() << "Error: Semestre fuera de rango - " << clase.getSemestre();
             }
 
-            int indexPeriodo = (clase.getPeriodo() == 1) ? 0 : 1;  // 1 = Ordinario, 2 = Intersemestral
+            int indexPeriodo = (clase.getPeriodo() == 1) ? 0 : 1;
             if (indexPeriodo >= 0 && indexPeriodo < ui->comboBoxPeriodoModificar->count()) {
                 ui->comboBoxPeriodoModificar->setCurrentIndex(indexPeriodo);
             } else {
@@ -603,11 +608,11 @@ void cframe::on_btnBuscarClaseModificar_clicked()
 
 void cframe::on_btnGuardarCambiosClas_clicked()
 {
-    qDebug() << "⚡ Botón Modificar Clase presionado ⚡";
+    qDebug() << "Botón Modificar Clase presionado";
 
     if (idClaseAnterior.isEmpty()) {
         QMessageBox::warning(this, "Error", "No hay una clase seleccionada para modificar.");
-        qDebug() << "🚨 Error: idClaseAnterior está vacío.";
+        qDebug() << "Error: idClaseAnterior está vacío.";
         return;
     }
 
@@ -632,11 +637,11 @@ void cframe::on_btnGuardarCambiosClas_clicked()
 
     if (exito) {
         QMessageBox::information(this, "Éxito", "Clase modificada correctamente.");
-        qDebug() << "✅ Clase modificada con éxito.";
+        qDebug() << "Clase modificada con éxito.";
         cargarClasesEnComboBoxModificar();
     } else {
         QMessageBox::critical(this, "Error", "No se pudo modificar la clase.");
-        qDebug() << "🚨 Error: No se pudo modificar la clase.";
+        qDebug() << "Error: No se pudo modificar la clase.";
     }
 }
 
@@ -659,7 +664,7 @@ void cframe::cargarClasesEnComboBoxAsignarMaestro()
     QList<Clase> listaClases = manejador.obtenerClases();
 
     if (listaClases.isEmpty()) {
-        qDebug() << "⚠️ No se encontraron clases en clases.bin";
+        qDebug() << "No se encontraron clases en clases.bin";
         return;
     }
 
@@ -667,8 +672,8 @@ void cframe::cargarClasesEnComboBoxAsignarMaestro()
         ui->comboBoxClaseAsignarMaestro->addItem(clase.getID());
     }
 
-    ui->comboBoxClaseAsignarMaestro->update();  // 🔹 Forzar actualización de UI
-    qDebug() << "✅ Clases cargadas en comboBoxClaseAsignarMaestro: " << ui->comboBoxClaseAsignarMaestro->count();
+    ui->comboBoxClaseAsignarMaestro->update();
+    qDebug() << "Clases cargadas en comboBoxClaseAsignarMaestro: " << ui->comboBoxClaseAsignarMaestro->count();
 }
 
 void cframe::cargarMaestrosEnComboBox()
@@ -679,7 +684,7 @@ void cframe::cargarMaestrosEnComboBox()
     QList<Usuario> listaUsuarios = manejadorUsuarios.obtenerUsuarios();
 
     if (listaUsuarios.isEmpty()) {
-        qDebug() << "⚠️ No se encontraron usuarios en usuarios.bin";
+        qDebug() << "No se encontraron usuarios en usuarios.bin";
         return;
     }
 
@@ -691,7 +696,7 @@ void cframe::cargarMaestrosEnComboBox()
     }
 
     ui->comboBoxMaestroAsignar->update();
-    qDebug() << "✅ Maestros cargados en comboBoxMaestroAsignar: " << ui->comboBoxMaestroAsignar->count();
+    qDebug() << "Maestros cargados en comboBoxMaestroAsignar: " << ui->comboBoxMaestroAsignar->count();
 }
 
 void cframe::on_btnAsignarMaestro_clicked()
@@ -725,7 +730,7 @@ void cframe::cargarClasesEnComboBoxMatricularAlumno(){
     QList<Clase> listaClases = manejador.obtenerClases();
 
     if (listaClases.isEmpty()) {
-        qDebug() << "⚠️ No se encontraron clases en clases.bin";
+        qDebug() << "No se encontraron clases en clases.bin";
         return;
     }
 
@@ -734,7 +739,7 @@ void cframe::cargarClasesEnComboBoxMatricularAlumno(){
     }
 
     ui->comboBoxClaseMatricularAlumno->update();
-    qDebug() << "✅ Clases cargadas en comboBoxClaseMatricularAlumno: " << ui->comboBoxClaseMatricularAlumno->count();
+    qDebug() << "Clases cargadas en comboBoxClaseMatricularAlumno: " << ui->comboBoxClaseMatricularAlumno->count();
 }
 
 void cframe::cargarAlumnosDisponibles(){
@@ -742,7 +747,7 @@ void cframe::cargarAlumnosDisponibles(){
     QString idClase = ui->comboBoxClaseMatricularAlumno->currentText();
 
     if (idClase.isEmpty()) {
-        qDebug() << "⚠️ No hay clase seleccionada. Esperando selección.";
+        qDebug() << "No hay clase seleccionada. Esperando selección.";
         return;
     }
 
@@ -753,28 +758,28 @@ void cframe::cargarAlumnosDisponibles(){
     QList<Usuario> listaUsuarios = manejadorUsuarios.obtenerUsuarios();
 
     if (listaUsuarios.isEmpty()) {
-        qDebug() << "⚠️ No se encontraron usuarios en usuarios.bin";
+        qDebug() << "No se encontraron usuarios en usuarios.bin";
         return;
     }
 
-    qDebug() << "🔎 Cargando alumnos disponibles para la clase " << idClase;
+    qDebug() << "Cargando alumnos disponibles para la clase " << idClase;
 
     for (const Usuario &usuario : listaUsuarios) {
         if (usuario.getTipoUsuario() == "Alumno") {
             if (!alumnosMatriculados.contains(usuario.getUsuario())) {
-                QString nombreCompleto = usuario.getNombre() + " " + usuario.getApellido();  // ✅ Mostrar "Nombre Apellido"
+                QString nombreCompleto = usuario.getNombre() + " " + usuario.getApellido();
 
-                QListWidgetItem *item = new QListWidgetItem(nombreCompleto);  // ✅ Mostrar en la lista
-                item->setData(Qt::UserRole, usuario.getUsuario());  // ✅ Guardar usuario internamente
+                QListWidgetItem *item = new QListWidgetItem(nombreCompleto);
+                item->setData(Qt::UserRole, usuario.getUsuario());
                 ui->listWidgetAlumnosDisponibles->addItem(item);
 
-                qDebug() << "✔ Alumno agregado a la lista: " << nombreCompleto << " (Usuario: " << usuario.getUsuario() << ")";
+                qDebug() << "Alumno agregado a la lista: " << nombreCompleto << " (Usuario: " << usuario.getUsuario() << ")";
             }
         }
     }
 
     ui->listWidgetAlumnosDisponibles->update();
-    qDebug() << "✅ Total alumnos disponibles: " << ui->listWidgetAlumnosDisponibles->count();
+    qDebug() << "Total alumnos disponibles: " << ui->listWidgetAlumnosDisponibles->count();
 }
 
 void cframe::cargarAlumnosMatriculados(){
@@ -782,7 +787,7 @@ void cframe::cargarAlumnosMatriculados(){
     QString idClase = ui->comboBoxClaseMatricularAlumno->currentText();
 
     if (idClase.isEmpty()) {
-        qDebug() << "⚠️ No hay clase seleccionada.";
+        qDebug() << "No hay clase seleccionada.";
         return;
     }
 
@@ -792,7 +797,7 @@ void cframe::cargarAlumnosMatriculados(){
     LoginManager manejadorUsuarios("usuarios.bin");
     QList<Usuario> listaUsuarios = manejadorUsuarios.obtenerUsuarios();
 
-    qDebug() << "📂 Cargando alumnos matriculados en la clase " << idClase;
+    qDebug() << "Cargando alumnos matriculados en la clase " << idClase;
 
     for (const QString &usuario : alumnosMatriculados) {
         for (const Usuario &datosUsuario : listaUsuarios) {
@@ -809,7 +814,7 @@ void cframe::cargarAlumnosMatriculados(){
     }
 
     ui->listWidgetAlumnosMatriculados->update();
-    qDebug() << "✅ Total alumnos matriculados: " << ui->listWidgetAlumnosMatriculados->count();
+    qDebug() << "Total alumnos matriculados: " << ui->listWidgetAlumnosMatriculados->count();
 }
 
 void cframe::on_btnMatricularAlumno_clicked(){
@@ -825,7 +830,7 @@ void cframe::on_btnMatricularAlumno_clicked(){
     QStringList alumnos;
 
     for (QListWidgetItem *item : seleccionados) {
-        QString usuario = item->data(Qt::UserRole).toString();  // ✅ Obtener el usuario real
+        QString usuario = item->data(Qt::UserRole).toString();
         alumnos.append(usuario);
     }
 
@@ -852,7 +857,7 @@ void cframe::on_btnDesmatricularAlumno_clicked()
     QStringList alumnos;
 
     for (QListWidgetItem *item : seleccionados) {
-        QString usuario = item->data(Qt::UserRole).toString();  // ✅ Obtener el usuario real
+        QString usuario = item->data(Qt::UserRole).toString();
         alumnos.append(usuario);
     }
 
@@ -876,7 +881,7 @@ void cframe::debugMostrarUsuarios()
     LoginManager manejadorUsuarios("usuarios.bin");
     QList<Usuario> listaUsuarios = manejadorUsuarios.obtenerUsuarios();
 
-    qDebug() << "📂 Usuarios encontrados en usuarios.bin:";
+    qDebug() << "Usuarios encontrados en usuarios.bin:";
     for (const Usuario &usuario : listaUsuarios) {
         qDebug() << "Usuario:" << usuario.getUsuario()
         << ", Nombre:" << usuario.getNombre()
@@ -889,14 +894,14 @@ void cframe::debugMostrarAlumnosMatriculados()
 {
     QString idClase = ui->comboBoxClaseMatricularAlumno->currentText();
     if (idClase.isEmpty()) {
-        qDebug() << "⚠️ No hay clase seleccionada.";
+        qDebug() << "No hay clase seleccionada.";
         return;
     }
 
     ManejadorClases manejador("clases.bin");
     QList<QString> alumnosMatriculados = manejador.obtenerAlumnosMatriculados(idClase);
 
-    qDebug() << "📂 Alumnos matriculados en la clase" << idClase << ":";
+    qDebug() << "Alumnos matriculados en la clase" << idClase << ":";
     for (const QString &alumno : alumnosMatriculados) {
         qDebug() << alumno;
     }
@@ -904,7 +909,7 @@ void cframe::debugMostrarAlumnosMatriculados()
 
 void cframe::on_comboBoxClaseMatricularAlumno_currentIndexChanged(int index)
 {
-    Q_UNUSED(index);  // 🔹 Evita advertencias de compilación si no se usa `index`
+    Q_UNUSED(index);
     cargarAlumnosDisponibles();
     cargarAlumnosMatriculados();
 }
@@ -916,7 +921,7 @@ void cframe::cargarClasesEnComboBoxEliminar()
     QList<Clase> listaClases = manejador.obtenerClases();
 
     if (listaClases.isEmpty()) {
-        qDebug() << "⚠️ No se encontraron clases en clases.bin";
+        qDebug() << "No se encontraron clases en clases.bin";
         return;
     }
 
@@ -925,7 +930,7 @@ void cframe::cargarClasesEnComboBoxEliminar()
     }
 
     ui->comboBoxClaseEliminar->update();
-    qDebug() << "✅ Clases cargadas en comboBoxClaseEliminar: " << ui->comboBoxClaseEliminar->count();
+    qDebug() << "Clases cargadas en comboBoxClaseEliminar: " << ui->comboBoxClaseEliminar->count();
 }
 
 void cframe::on_btnBuscarClaseEliminar_clicked()
@@ -944,10 +949,10 @@ void cframe::on_btnBuscarClaseEliminar_clicked()
 
     for (const Clase &clase : listaClases) {
         if (clase.getID() == idClase) {
-            ui->labelMostrarNombreClase->setText(clase.getNombre());  // ✅ Mostrar el nombre de la clase
+            ui->labelMostrarNombreClase->setText(clase.getNombre());
             QString usuarioMaestro = clase.getUsuarioAsociado();
 
-            // 🔹 Buscar nombre y apellido del maestro
+
             QString nombreMaestro = "Desconocido";
             for (const Usuario &usuario : listaUsuarios) {
                 if (usuario.getUsuario() == usuarioMaestro) {
@@ -955,9 +960,7 @@ void cframe::on_btnBuscarClaseEliminar_clicked()
                     break;
                 }
             }
-            ui->labelMaestroClaseEliminar->setText(nombreMaestro);  // ✅ Mostrar el maestro
-
-            // 🔹 Limpiar y mostrar alumnos matriculados con Nombre y Apellido
+            ui->labelMaestroClaseEliminar->setText(nombreMaestro);
             ui->listWidgetAlumnosClaseEliminar->clear();
             QList<QString> alumnosMatriculados = manejador.obtenerAlumnosMatriculados(idClase);
 
@@ -971,7 +974,7 @@ void cframe::on_btnBuscarClaseEliminar_clicked()
                 }
             }
 
-            qDebug() << "✅ Información de la clase cargada: " << clase.getNombre();
+            qDebug() << "Información de la clase cargada: " << clase.getNombre();
             return;
         }
     }
@@ -990,7 +993,7 @@ void cframe::on_btnEliminarClase_clicked()
 
     QMessageBox::StandardButton confirmacion;
     confirmacion = QMessageBox::warning(this, "Confirmación",
-                                        "⚠️ Si elimina esta clase, se desvincularán el maestro y los alumnos asignados.\n"
+                                        "⚠ Si elimina esta clase, se desvincularán el maestro y los alumnos asignados.\n"
                                         "¿Está seguro de que desea continuar?",
                                         QMessageBox::Yes | QMessageBox::No);
 
@@ -1003,7 +1006,6 @@ void cframe::on_btnEliminarClase_clicked()
     if (manejador.eliminarClase(idClase)) {
         QMessageBox::information(this, "Éxito", "Clase eliminada correctamente.");
 
-        // 🔄 Actualizar la UI después de eliminar la clase
         actualizarUI();
     } else {
         QMessageBox::critical(this, "Error", "No se pudo eliminar la clase.");
@@ -1012,7 +1014,7 @@ void cframe::on_btnEliminarClase_clicked()
 
 void cframe::actualizarUI()
 {
-    // ✅ Limpiar y recargar los elementos en la ventana de MODIFICAR CLASE
+    // Limpiar y recargar los elementos en la ventana de MODIFICAR CLASE
     ui->comboBoxBuscarClaseModificar->clear();
     ui->lineEditIDClaseModificar->clear();
     ui->lineEditNombreClaseModificar->clear();
@@ -1023,23 +1025,268 @@ void cframe::actualizarUI()
     ui->spinBoxAnioModificar->setValue(QDate::currentDate().year());
     cargarClasesEnComboBoxModificar();
 
-    // ✅ Limpiar y recargar los elementos en la ventana de ELIMINAR CLASE
+    // Limpiar y recargar los elementos en la ventana de ELIMINAR CLASE
     ui->comboBoxClaseEliminar->clear();
     ui->labelMostrarNombreClase->clear();
     ui->labelMaestroClaseEliminar->clear();
     ui->listWidgetAlumnosClaseEliminar->clear();
     cargarClasesEnComboBoxEliminar();
 
-    // ✅ Limpiar y recargar los elementos en la ventana de ASIGNAR CLASE
+    //  Limpiar y recargar los elementos en la ventana de ASIGNAR CLASE
     ui->comboBoxClaseAsignarMaestro->clear();
     ui->comboBoxMaestroAsignar->clear();
     cargarClasesEnComboBoxAsignarMaestro();
     cargarMaestrosEnComboBox();
 
-    // ✅ Limpiar y recargar los elementos en la ventana de MATRICULAR ALUMNOS
+    //  Limpiar y recargar los elementos en la ventana de MATRICULAR ALUMNOS
     ui->comboBoxClaseMatricularAlumno->clear();
     ui->listWidgetAlumnosDisponibles->clear();
     ui->listWidgetAlumnosMatriculados->clear();
     cargarClasesEnComboBoxMatricularAlumno();
+}
+
+void cframe::on_pushButton_15_clicked()
+{
+    QMessageBox::StandardButton respuesta;
+    respuesta = QMessageBox::question(this, "Confirmación", "¿Seguro que quieres salir?",
+                                      QMessageBox::Yes | QMessageBox::No);
+
+
+    if (respuesta == QMessageBox::Yes) {
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->stackedWidget_4->setCurrentIndex(0);
+    }
+}
+
+void cframe::cargarClasesDeMaestro(QComboBox *comboBox)
+{
+    comboBox->clear();
+    QString usuarioMaestro = usuarioActivo;
+
+    ManejadorClases manejador("clases.bin");
+    QList<Clase> listaClases = manejador.obtenerClases();
+
+    for (const Clase &clase : listaClases) {
+        if (clase.getUsuarioAsociado() == usuarioMaestro) {
+            comboBox->addItem(clase.getID());
+        }
+    }
+}
+
+void cframe::on_btnAgregarPreguntaCrear_clicked()
+{
+    int row = ui->tablePreguntasCrear->rowCount();
+    ui->tablePreguntasCrear->insertRow(row);
+
+    // **Enunciado de la Pregunta**
+    QTableWidgetItem *enunciado = new QTableWidgetItem();
+    ui->tablePreguntasCrear->setItem(row, 0, enunciado);
+
+    // **Tipo de Pregunta (Verdadero/Falso, Selección Múltiple, Enumerada)**
+    QComboBox *comboTipo = new QComboBox();
+    comboTipo->addItems({"Verdadero/Falso", "Selección Múltiple", "Enumerada"});
+    ui->tablePreguntasCrear->setCellWidget(row, 1, comboTipo);
+
+    // **Opciones de Respuesta (separadas por `;`)**
+    QTableWidgetItem *opciones = new QTableWidgetItem();
+    ui->tablePreguntasCrear->setItem(row, 2, opciones);
+
+    // **ComboBox para Seleccionar Respuesta Correcta**
+    QComboBox *comboCorrecta = new QComboBox();
+    ui->tablePreguntasCrear->setCellWidget(row, 3, comboCorrecta);
+
+    // Conectar cambio en opciones para actualizar el ComboBox de respuestas correctas
+    connect(ui->tablePreguntasCrear, &QTableWidget::cellChanged, this, &cframe::actualizarOpcionesRespuestaCrear);
+}
+
+void cframe::actualizarOpcionesRespuestaCrear(int row, int column)
+{
+    if (column == 2) {  // Solo actualizar si se modifican las opciones de respuesta
+        QString opcionesTexto = ui->tablePreguntasCrear->item(row, 2)->text();
+        QStringList opciones = opcionesTexto.split(";");
+
+        QComboBox *comboCorrecta = qobject_cast<QComboBox*>(ui->tablePreguntasCrear->cellWidget(row, 3));
+        if (comboCorrecta) {
+            comboCorrecta->clear();
+            comboCorrecta->addItems(opciones);
+        }
+    }
+}
+
+void cframe::on_btnEliminarPreguntaCrear_clicked()
+{
+    int row = ui->tablePreguntasCrear->currentRow();  // Obtener la fila seleccionada
+    if (row >= 0) {
+        ui->tablePreguntasCrear->removeRow(row);  // Eliminar la fila si hay una seleccionada
+    } else {
+        QMessageBox::warning(this, "Error", "Seleccione una pregunta para eliminar.");
+    }
+}
+
+void cframe::cargarExamenesEnComboBox()
+{
+    ui->comboBoxExamenModificar->clear();
+
+    ManejadorExamenes manejador("examenes.bin");
+    QList<Examen> listaExamenes = manejador.obtenerExamenes();
+
+    if (listaExamenes.isEmpty()) {
+        QMessageBox::warning(this, "No hay exámenes", "No hay exámenes disponibles para modificar.");
+        return;
+    }
+
+    for (const Examen &examen : listaExamenes) {
+        if (!examen.getID().isEmpty()) {  // Evitar IDs vacíos o valores erróneos
+            qDebug() << "Cargando examen en ComboBox (ID):" << examen.getID();
+            ui->comboBoxExamenModificar->addItem(examen.getID());
+        }
+    }
+}
+
+void cframe::on_btnCrearExamen_clicked()
+{
+    QString idClase = ui->comboBoxClaseCrear->currentText();
+    QString idExamen = ui->lineEditIDExamenCrear->text();
+    QString nombreExamen = ui->lineEditNombreExamenCrear->text();
+    QString fecha = ui->dateEditFechaCrear->date().toString("yyyy-MM-dd");
+    QString hora = ui->timeEditHoraCrear->time().toString("HH:mm");
+    double duracion = ui->doubleSpinBoxDuracionCrear->value();
+
+    if (idClase.isEmpty() || idExamen.isEmpty() || nombreExamen.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Todos los campos son obligatorios.");
+        return;
+    }
+
+    Examen nuevoExamen(idExamen, nombreExamen, fecha, hora, duracion);
+
+    for (int i = 0; i < ui->tablePreguntasCrear->rowCount(); i++) {
+        QString enunciado = ui->tablePreguntasCrear->item(i, 0)->text();
+        QComboBox *comboTipo = qobject_cast<QComboBox*>(ui->tablePreguntasCrear->cellWidget(i, 1));
+        QString tipoPregunta = comboTipo->currentText();
+        QString opciones = ui->tablePreguntasCrear->item(i, 2)->text();
+        QComboBox *comboCorrecta = qobject_cast<QComboBox*>(ui->tablePreguntasCrear->cellWidget(i, 3));
+        QString respuestaCorrecta = comboCorrecta->currentText();
+
+        nuevoExamen.agregarPregunta(enunciado, tipoPregunta, opciones, respuestaCorrecta);
+    }
+
+    ManejadorExamenes manejadorExamenes("examenes.bin");
+    if (manejadorExamenes.agregarExamen(nuevoExamen)) {
+        QMessageBox::information(this, "Éxito", "Examen creado correctamente.");
+
+         cargarExamenesEnComboBox();
+        ui->comboBoxExamenModificar->update();
+    } else {
+        QMessageBox::critical(this, "Error", "No se pudo crear el examen.");
+    }
+}
+
+void cframe::on_pushButton_12_clicked()
+{
+    ui->stackedWidget_4->setCurrentIndex(1);
+}
+
+void cframe::on_pushButton_13_clicked()
+{
+    cargarExamenesEnComboBox();
+    ui->stackedWidget_4->setCurrentIndex(2);
+}
+
+void cframe::on_pushButton_14_clicked()
+{
+    ui->stackedWidget_4->setCurrentIndex(3);
+}
+
+void cframe::on_btnModificarExamen_clicked()
+{
+    QString idViejo = ui->comboBoxExamenModificar->currentText();
+    QString idNuevo = ui->lineEditIDExamenModificar->text();
+    QString nombreNuevo = ui->lineEditNombreExamenModificar->text();
+    QString fechaNueva = ui->dateEditFechaModificar->date().toString("yyyy-MM-dd");
+    QString horaNueva = ui->timeEditHoraModificar->time().toString("HH:mm");
+    double duracionNueva = ui->doubleSpinBoxDuracionModificar->value();
+
+    if (idNuevo.isEmpty() || nombreNuevo.isEmpty()) {
+        QMessageBox::warning(this, "Error", "Todos los campos son obligatorios.");
+        return;
+    }
+
+    Examen nuevoExamen(idNuevo, nombreNuevo, fechaNueva, horaNueva, duracionNueva);
+
+    for (int i = 0; i < ui->tablePreguntasModificar->rowCount(); i++) {
+        QString enunciado = ui->tablePreguntasModificar->item(i, 0)->text();
+        QComboBox *comboTipo = qobject_cast<QComboBox*>(ui->tablePreguntasModificar->cellWidget(i, 1));
+        QString tipoPregunta = comboTipo->currentText();
+        QString opciones = ui->tablePreguntasModificar->item(i, 2)->text();
+        QComboBox *comboCorrecta = qobject_cast<QComboBox*>(ui->tablePreguntasModificar->cellWidget(i, 3));
+        QString respuestaCorrecta = comboCorrecta->currentText();
+
+        nuevoExamen.agregarPregunta(enunciado, tipoPregunta, opciones, respuestaCorrecta);
+    }
+
+    ManejadorExamenes manejadorExamenes("examenes.bin");
+    if (manejadorExamenes.modificarExamen(idViejo, nuevoExamen)) {
+        QMessageBox::information(this, "Éxito", "Examen modificado correctamente.");
+    } else {
+        QMessageBox::critical(this, "Error", "No se pudo modificar el examen.");
+    }
+}
+
+void cframe::on_comboBoxExamenModificar_currentIndexChanged(int index)
+{
+    QString idExamen = ui->comboBoxExamenModificar->currentText();
+    if (idExamen.isEmpty()) return;
+
+    ManejadorExamenes manejador("examenes.bin");
+    Examen examen = manejador.obtenerExamen(idExamen);
+
+    if (examen.getID().isEmpty()) {
+        QMessageBox::warning(this, "Error", "No se encontró el examen seleccionado.");
+        return;
+    }
+
+    // Cargar datos generales del examen
+    ui->lineEditIDExamenModificar->setText(examen.getID());
+    ui->lineEditNombreExamenModificar->setText(examen.getNombre());
+    ui->dateEditFechaModificar->setDate(QDate::fromString(examen.getFecha(), "yyyy-MM-dd"));
+    ui->timeEditHoraModificar->setTime(QTime::fromString(examen.getHora(), "HH:mm"));
+    ui->doubleSpinBoxDuracionModificar->setValue(examen.getDuracion());
+/*
+    // Cargar preguntas en la tabla
+    ui->tablePreguntasModificar->setRowCount(0);
+    for (const Pregunta &pregunta : examen.getPreguntas()) {
+        int row = ui->tablePreguntasModificar->rowCount();
+        ui->tablePreguntasModificar->insertRow(row);
+
+        // Enunciado
+        QTableWidgetItem *enunciado = new QTableWidgetItem(pregunta.getEnunciado());
+        ui->tablePreguntasModificar->setItem(row, 0, enunciado);
+
+        // Tipo de pregunta
+        QComboBox *comboTipo = new QComboBox();
+        comboTipo->addItems({"Verdadero/Falso", "Selección Múltiple", "Enumerada"});
+        comboTipo->setCurrentText(pregunta.getTipo());
+        ui->tablePreguntasModificar->setCellWidget(row, 1, comboTipo);
+
+        // Opciones de Respuesta
+        QTableWidgetItem *opciones = new QTableWidgetItem(pregunta.getOpciones());
+        ui->tablePreguntasModificar->setItem(row, 2, opciones);
+
+        // Respuesta Correcta
+        QComboBox *comboCorrecta = new QComboBox();
+        QStringList opcionesLista = pregunta.getOpciones().split(";");
+        comboCorrecta->addItems(opcionesLista);
+        comboCorrecta->setCurrentText(pregunta.getRespuestaCorrecta());
+        ui->tablePreguntasModificar->setCellWidget(row, 3, comboCorrecta);
+    }*/
+
+    qDebug() << "Cargando preguntas del examen:" << examen.getID();
+    qDebug() << "Total de preguntas:" << examen.getPreguntas().size();
+
+    ui->tablePreguntasModificar->setRowCount(0);
+
+    for (const Pregunta &pregunta : examen.getPreguntas()) {
+        qDebug() << "  Agregando pregunta a la tabla:" << pregunta.getEnunciado();
+    }
 }
 

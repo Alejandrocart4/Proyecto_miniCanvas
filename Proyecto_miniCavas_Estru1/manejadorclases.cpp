@@ -106,7 +106,7 @@ bool ManejadorClases::matricularAlumnos(const QString &idClase, const QStringLis
     QFile tempFile("temp_clases.bin");
 
     if (!file.open(QIODevice::ReadOnly) || !tempFile.open(QIODevice::WriteOnly)) {
-        qDebug() << "🚨 Error: No se pudo abrir el archivo.";
+        qDebug() << " Error: No se pudo abrir el archivo.";
         return false;
     }
 
@@ -181,7 +181,7 @@ bool ManejadorClases::desmatricularAlumnos(const QString &idClase, const QString
     QFile tempFile("temp_clases.bin");
 
     if (!file.open(QIODevice::ReadOnly) || !tempFile.open(QIODevice::WriteOnly)) {
-        qDebug() << "🚨 Error: No se pudo abrir el archivo.";
+        qDebug() << "Error: No se pudo abrir el archivo.";
         return false;
     }
 
