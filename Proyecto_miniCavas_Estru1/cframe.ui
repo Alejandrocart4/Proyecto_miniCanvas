@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="page_2">
      <widget class="QLabel" name="label_2">
@@ -136,25 +136,6 @@
       </property>
       <property name="text">
        <string>Ingresar</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_registrar">
-      <property name="geometry">
-       <rect>
-        <x>790</x>
-        <y>390</y>
-        <width>171</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <italic>true</italic>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>No tienes una cuenta?</string>
       </property>
      </widget>
      <widget class="QPushButton" name="btnVerPasswordLogin">
@@ -1964,7 +1945,7 @@
        </rect>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="page_18"/>
       <widget class="QWidget" name="page_16">
@@ -2027,8 +2008,18 @@
           <x>720</x>
           <y>160</y>
           <width>131</width>
-          <height>29</height>
+          <height>31</height>
          </rect>
+        </property>
+        <property name="dateTime">
+         <datetime>
+          <hour>18</hour>
+          <minute>0</minute>
+          <second>0</second>
+          <year>2025</year>
+          <month>2</month>
+          <day>18</day>
+         </datetime>
         </property>
         <property name="minimumDateTime">
          <datetime>
@@ -2037,7 +2028,7 @@
           <second>0</second>
           <year>2025</year>
           <month>2</month>
-          <day>18</day>
+          <day>16</day>
          </datetime>
         </property>
        </widget>
@@ -2281,9 +2272,9 @@
        <widget class="QTimeEdit" name="timeEditHoraModificar">
         <property name="geometry">
          <rect>
-          <x>780</x>
+          <x>770</x>
           <y>150</y>
-          <width>118</width>
+          <width>131</width>
           <height>29</height>
          </rect>
         </property>
@@ -2297,11 +2288,31 @@
           <height>29</height>
          </rect>
         </property>
+        <property name="dateTime">
+         <datetime>
+          <hour>0</hour>
+          <minute>0</minute>
+          <second>0</second>
+          <year>2025</year>
+          <month>2</month>
+          <day>18</day>
+         </datetime>
+        </property>
+        <property name="minimumDateTime">
+         <datetime>
+          <hour>0</hour>
+          <minute>0</minute>
+          <second>0</second>
+          <year>2025</year>
+          <month>2</month>
+          <day>14</day>
+         </datetime>
+        </property>
         <property name="minimumDate">
          <date>
           <year>2025</year>
           <month>2</month>
-          <day>17</day>
+          <day>14</day>
          </date>
         </property>
        </widget>
@@ -2484,13 +2495,13 @@
         </column>
         <column>
          <property name="text">
-          <string>Respuesta</string>
+          <string>Respuesta correcta</string>
          </property>
         </column>
        </widget>
       </widget>
       <widget class="QWidget" name="page_19">
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="comboBoxClaseExEliminar">
         <property name="geometry">
          <rect>
           <x>430</x>
@@ -2500,7 +2511,7 @@
          </rect>
         </property>
        </widget>
-       <widget class="QComboBox" name="comboBox_2">
+       <widget class="QComboBox" name="comboBoxExamenEliminar">
         <property name="geometry">
          <rect>
           <x>710</x>
@@ -2510,7 +2521,7 @@
          </rect>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="btnEliminarExamen">
         <property name="geometry">
          <rect>
           <x>610</x>
@@ -2654,7 +2665,106 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="page_3"/>
+    <widget class="QWidget" name="page_3">
+     <widget class="QStackedWidget" name="stackedWidget_5">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>30</y>
+        <width>1281</width>
+        <height>681</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="page_21"/>
+      <widget class="QWidget" name="page_22">
+       <widget class="QComboBox" name="comboBoxClasesMatriculadas">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>100</y>
+          <width>141</width>
+          <height>28</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBoxExamenDisponibles">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>150</y>
+          <width>141</width>
+          <height>28</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnIniciarExamen">
+        <property name="geometry">
+         <rect>
+          <x>310</x>
+          <y>120</y>
+          <width>83</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Iniciar</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="lblTiempoRestante">
+        <property name="geometry">
+         <rect>
+          <x>530</x>
+          <y>100</y>
+          <width>63</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+       <widget class="QTableWidget" name="tablePreguntasExamen">
+        <property name="geometry">
+         <rect>
+          <x>540</x>
+          <y>300</y>
+          <width>256</width>
+          <height>192</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnEnviarRespuestas">
+        <property name="geometry">
+         <rect>
+          <x>630</x>
+          <y>140</y>
+          <width>83</width>
+          <height>29</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Enviar</string>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>12</x>
+        <y>150</y>
+        <width>131</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Realizar Examen</string>
+      </property>
+     </widget>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

@@ -110,6 +110,11 @@ private slots:
 
     void on_comboBoxExamenModificar_currentIndexChanged(int index);
 
+    void on_btnEliminarExamen_clicked();
+
+
+    void on_btnIniciarExamen_clicked();
+
 private:
     Ui::cframe *ui;
     bool passwordVisibleRegistro = false;
@@ -132,6 +137,12 @@ private:
    void cargarClasesDeMaestro(QComboBox *comboBox);
    void actualizarOpcionesRespuestaCrear(int row, int column);
    void cargarExamenesEnComboBox();
+   void actualizarOpcionesRespuestaModificar(int row, int column);
+   void cargarClasesEnComboBoxEliminarEx();
+   void cargarExamenesEnComboBoxEliminar();
+
+   void iniciarExamen();
+
 
 
 
